@@ -9,12 +9,12 @@
 		this->hp = hp;
 	}
 
-	Inventory Player::getInventory(){
+	Inventory* Player::getInventory(){
 		return inventory;
 	}
 
-	void Player::setInventory(Inventory inventory) {
-		this->inventory = inventory;
+	void Player::setInventory(Inventory &inventory) {
+		this->inventory = &inventory;
 	}
 
 	int Player::Player::getLocationX(){
@@ -40,9 +40,9 @@
 //			this->inventory = new Inventory();
 	}
 
-	Player::Player(short hp, int locationX, int locationY, Inventory inventory) {
+	Player::Player(short hp, int locationX, int locationY, Inventory &inventory) {
 		this->hp = hp;
 		this->locationX = locationX;
 		this->locationY = locationY;
-		this->inventory = inventory;
+		this->inventory = &inventory;
 	}
