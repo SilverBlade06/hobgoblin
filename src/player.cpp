@@ -37,7 +37,7 @@
 			this->hp = 100;
 			this->locationX = 0;
 			this->locationY = 0;
-//			this->inventory = new Inventory();
+			this->inventory = new Inventory();
 	}
 
 	Player::Player(short hp, int locationX, int locationY, Inventory &inventory) {
