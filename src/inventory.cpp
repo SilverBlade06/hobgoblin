@@ -1,10 +1,12 @@
 #include "inventory.h"
+#include "stdio.h"
 
 	Inventory::Inventory() {
-	    this->items = new char*[10];
-	    //int i = 0;
-	    for (int i = 0; i < (sizeof(items)/sizeof(*items)); i++) {
-		    this->items[i] = 0;
+	    this->items = new Item[10];
+	    Item* item;
+		for (int i = 0; i < (sizeof(items)/sizeof(*items)); i++) {
+			item = new Item();
+			this->items[i] = *item;
 	    }
     }
 
