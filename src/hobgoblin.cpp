@@ -38,6 +38,10 @@ struct Vector {
        return Vector(x * a, y * a, z * a);
    }
 
+   Vector operator/(float a) {
+          return Vector(x / a, y / a, z / a);
+   }
+
    Vector operator+(const Vector& v) {
        return Vector(x + v.x, y + v.y, z + v.z);
    }
@@ -66,12 +70,12 @@ GLuint generateVBO(GLuint vbo, GLsizeiptr size, const GLvoid * data) {
     return vbo;
 }
 
-GLuint generateVAO(GLuint vao, GLuint vbo) {
+GLuint generateVAO(GLuint vao, GLuint vbo, GLuint verticesPerDraw) {
     glGenVertexArrays(1, &vao);
     glBindVertexArray(vao);
     glBindBuffer(GL_ARRAY_BUFFER, vbo);
     // Vertices
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 5 * sizeof(float), NULL);
+    glVertexAttribPointer(0, verticesPerDraw, GL_FLOAT, GL_FALSE, 5 * sizeof(float), NULL);
     glEnableVertexAttribArray(0);
     // Texture coords
     glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 5 * sizeof(float),
@@ -96,6 +100,97 @@ const char* loadShaderFromFile(const char* filePath) {
     }
     const char* vertex_shader = VertexShaderCode.c_str();
     return vertex_shader;
+}
+
+//********************************************************************************************//
+//   Camera, Controls, keyboard and mouse                                                TODO //
+//********************************************************************************************//
+
+// horizontal angle : toward -Z
+float horizontalAngle = 3.14f;
+// vertical angle : 0, look at the horizon
+float verticalAngle = 0.0f;
+// Initial Field of View
+float initialFoV = 45.0f;
+
+float speed = 3.0f; // 3 units / second
+float mouseSpeed = 0.005f;
+
+Vector cameraPos(0,0,5);
+Vector cameraDirection;
+Vector cameraRight(
+        sin(horizontalAngle - 3.14f/2.0f),
+        0,
+        cos(horizontalAngle - 3.14f/2.0f));
+Vector cameraUp = (cameraDirection % cameraRight) / ((cameraDirection % cameraRight)).length();
+
+double lastTime = glfwGetTime();
+
+void handleCameraView(GLFWwindow* window) {
+
+   double currentTime = glfwGetTime();
+   double deltaTime = double(currentTime - lastTime);
+
+   // Get mouse position
+   double xpos, ypos;
+   glfwGetCursorPos(window, &xpos, &ypos);
+
+   // Reset mouse position for next frame
+   glfwSetCursorPos(window, 640/2, 640/2);
+
+   // Compute new orientation
+   horizontalAngle = horizontalAngle + mouseSpeed * deltaTime * float(640/2 - xpos);
+   verticalAngle   = verticalAngle + mouseSpeed * deltaTime * float(640/2 - ypos);
+
+   cameraDirection.x = cos(verticalAngle) * sin(horizontalAngle);
+   cameraDirection.y = sin(verticalAngle);
+   cameraDirection.z = cos(verticalAngle) * cos(horizontalAngle);
+
+   cameraRight.x = sin(horizontalAngle - 3.14f/2.0f);
+   cameraRight.y = 0;
+   cameraRight.z = cos(horizontalAngle - 3.14f/2.0f);
+
+   cameraUp = (cameraDirection % cameraRight) / ((cameraDirection % cameraRight)).length();
+
+   // Move forward
+   if (glfwGetKey(window, GLFW_KEY_UP) == GLFW_PRESS){
+       cameraPos = cameraPos + cameraDirection * deltaTime * speed;
+   }
+   // Move backward
+   if (glfwGetKey(window, GLFW_KEY_DOWN) == GLFW_PRESS){
+       cameraPos = cameraPos - cameraDirection * deltaTime * speed;
+   }
+   // Strafe right
+   if (glfwGetKey(window, GLFW_KEY_RIGHT) == GLFW_PRESS){
+       cameraPos = cameraPos + cameraRight * deltaTime * speed;
+   }
+   // Strafe left
+   if (glfwGetKey(window, GLFW_KEY_LEFT) == GLFW_PRESS){
+       cameraPos = cameraPos - cameraRight * deltaTime * speed;
+   }
+
+   gluLookAt(
+           cameraPos.x,
+           cameraPos.y,
+           cameraPos.z,
+           cameraPos.x + cameraDirection.x,
+           cameraPos.x + cameraDirection.y,
+           cameraPos.x + cameraDirection.z,
+           cameraUp.x,
+           cameraUp.y,
+           cameraUp.z);
+
+//   // Projection matrix : 45&deg; Field of View, 4:3 ratio, display range : 0.1 unit <-> 100 units
+//   ProjectionMatrix = glm::perspective(FoV, 4.0f / 3.0f, 0.1f, 100.0f);
+//   // Camera matrix
+//   ViewMatrix       = glm::lookAt(
+//       position,           // Camera is here
+//       position+direction, // and looks here : at the same position, plus "direction"
+//       up                  // Head is up (set to 0,-1,0 to look upside-down)
+//   );
+
+   lastTime = currentTime;
+
 }
 
 int main() {
@@ -145,12 +240,16 @@ int main() {
    vbo = generateVBO(vbo, 30 * sizeof(float), points);
    GLuint vbo2 = 0;
    vbo2 = generateVBO(vbo2, 60 * sizeof(float), points2);
+   GLuint vbo3 = 0;
+   vbo3 = generateVBO(vbo3, 120 * sizeof(float), cube);
 
    // Vertex attribute objects
    GLuint vao = 0;
-   vao = generateVAO(vao, vbo);
+   vao = generateVAO(vao, vbo, 3);
    GLuint vao2 = 0;
-   vao2 = generateVAO(vao2, vbo2);
+   vao2 = generateVAO(vao2, vbo2, 3);
+   GLuint vao3 = 0;
+   vao3 = generateVAO(vao3, vbo3, 4);
 
    // Read the Vertex Shader code from the file
 //   const char* vertex_shader = loadShaderFromFile("shaders/vertex_shader_default.glsl");
@@ -270,115 +369,75 @@ int main() {
    SOIL_free_image_data(image2);
    glBindTexture(GL_TEXTURE_2D, 0);
 
-   //********************************************************************************************//
-   //   Controls, keyboard and mouse                                                             //
-   //********************************************************************************************//
-   float vector3D[3] = {0, 0, 5};
-   // horizontal angle : toward -Z
-   float horizontalAngle = 3.14f;
-   // vertical angle : 0, look at the horizon
-   float verticalAngle = 0.0f;
-   // Initial Field of View
-   float initialFoV = 45.0f;
+   // Texture No. 3 BOX
 
-   float speed = 3.0f; // 3 units / second
-   float mouseSpeed = 0.005f;
+   GLuint texture3; // texture ID
+   glGenTextures(1, &texture3);
+   glBindTexture(GL_TEXTURE_2D, texture3);
+   // Parameters
+   // Texture wrap
+   glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+   glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+   // Texture filter
+   glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+   glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+   // Only for Mipmaps
+//   glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
+//   glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+   int width3, height3;
+   unsigned char* image3 = SOIL_load_image("textures/wooden_box.jpg", &width3, &height3, 0, SOIL_LOAD_RGB);
 
-   // Get mouse position
-   double xpos, ypos;
-   glfwGetCursorPos(window, &xpos, &ypos);
-
-   // Reset mouse position for next frame
-   glfwSetCursorPos(window, 640/2, 640/2);
-
-   // Compute new orientation
-   horizontalAngle += mouseSpeed /** deltaTime */* float(1024/2 - xpos );
-   verticalAngle   += mouseSpeed /** deltaTime */* float( 768/2 - ypos );
-
-   // Direction : Spherical coordinates to Cartesian coordinates conversion
-   vector3D[0] = cos(verticalAngle) * sin(horizontalAngle);
-   vector3D[1] = sin(verticalAngle);
-   vector3D[2] = cos(verticalAngle) * cos(horizontalAngle);
-
-   // Right vector
-//   glm::vec3 right = glm::vec3(
-//       sin(horizontalAngle - 3.14f/2.0f),
-//       0,
-//       cos(horizontalAngle - 3.14f/2.0f)
-//   );
-//
-//   // Up vector : perpendicular to both direction and right
-//   glm::vec3 up = glm::cross( right, direction );
-//
-//   // Move forward
-//   if (glfwGetKey( GLFW_KEY_UP ) == GLFW_PRESS){
-//       position += direction * deltaTime * speed;
-//   }
-//   // Move backward
-//   if (glfwGetKey( GLFW_KEY_DOWN ) == GLFW_PRESS){
-//       position -= direction * deltaTime * speed;
-//   }
-//   // Strafe right
-//   if (glfwGetKey( GLFW_KEY_RIGHT ) == GLFW_PRESS){
-//       position += right * deltaTime * speed;
-//   }
-//   // Strafe left
-//   if (glfwGetKey( GLFW_KEY_LEFT ) == GLFW_PRESS){
-//       position -= right * deltaTime * speed;
-//   }
-//
-//   double currentTime = glfwGetTime();
-//   float deltaTime = float(currentTime - lastTime);
-//
-//   float FoV = initialFoV - 5 * glfwGetMouseWheel();
-//
-//   // Projection matrix : 45&deg; Field of View, 4:3 ratio, display range : 0.1 unit <-> 100 units
-//   ProjectionMatrix = glm::perspective(FoV, 4.0f / 3.0f, 0.1f, 100.0f);
-//   // Camera matrix
-//   ViewMatrix       = glm::lookAt(
-//       position,           // Camera is here
-//       position+direction, // and looks here : at the same position, plus "direction"
-//       up                  // Head is up (set to 0,-1,0 to look upside-down)
-//   );
-
-
+   glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width3, height3, 0, GL_RGB, GL_UNSIGNED_BYTE, image3);
+   glGenerateMipmap(GL_TEXTURE_2D);
+   // Cleanup
+   SOIL_free_image_data(image3);
+   glBindTexture(GL_TEXTURE_2D, 0);
 
    //********************************************************************************************//
    //   Drawing loop                                                                             //
    //********************************************************************************************//
    while (!glfwWindowShouldClose (window)) {
+
+       glEnable(GL_DEPTH_TEST);
        // wipe the drawing surface clear
        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
        // Create background color by clearing
        glClearColor(0.2, 0.2, 0.2, 1);
 
        // Wireframe or fill
-   //    glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+//       glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+
+//       handleCameraView(window); // TODO, doesn't work for now
 
        // Bind the texture
        glBindTexture(GL_TEXTURE_2D, texture);
        // Use 1st shader program with the 1st VAO
        glUseProgram(shader_program);
        glBindVertexArray(vao);
-
-       // draw points 0-3 from the currently bound VAO with current in-use shader
        glDrawArrays(GL_TRIANGLES, 0, 2*3); // draw 2 triangles
 
        // Bind the texture
        glBindTexture(GL_TEXTURE_2D, texture2);
        // Use 2nd shader program with the 2nd VAO
        glUseProgram(shader_program2);
-       glBindVertexArray (vao2);
+       glBindVertexArray(vao2);
        glDrawArrays(GL_TRIANGLES, 0, 4*3); // draw 4 triangles
+//gluLookAt(0.2,0.3,0,0,0,-0.5,0,1,0);
+//       // Bind the texture
+//       glBindTexture(GL_TEXTURE_2D, texture3);
+//       // Use 2nd shader program with the 3nd VAO
+//       glUseProgram(shader_program);
+//       glBindVertexArray(vao3);
+//       glDrawArrays(GL_QUADS, 0, 4); // draw 6 quads
 
        // cleanup
        glBindTexture(GL_TEXTURE_2D, 0);
        glBindVertexArray(0);
 
        // update other events like input handling
-       glfwPollEvents ();
+       glfwPollEvents();
        // put the stuff we've been drawing onto the display
-       glfwSwapBuffers (window);
+       glfwSwapBuffers(window);
    }
 
    return 0;
