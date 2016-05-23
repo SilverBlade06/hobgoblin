@@ -13,7 +13,7 @@
 #ifndef SRC_CAMERA_H_
 #define SRC_CAMERA_H_
 
-void handleCameraView(GLFWwindow* window);
+void controlCamera(GLFWwindow* window);
 
 
 #endif /* SRC_CAMERA_H_ */
