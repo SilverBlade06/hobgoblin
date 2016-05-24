@@ -9,32 +9,6 @@
 GLuint generateVBO(GLuint vbo, GLsizeiptr size, const GLvoid * data);
 GLuint generateVAO(GLuint vao, GLuint vbo, GLuint verticesPerDraw);
 
-//   // Square vertices /**/ Texture coords
-//   float points[] = {
-//        -0.5f,  0.5f,  0.0f,/**/ -1.0f,  1.0f,
-//         0.5f,  0.5f,  0.0f,/**/  1.0f,  1.0f,
-//         0.5f, -0.5f,  0.0f,/**/  1.0f, -1.0f,
-//        -0.5f, -0.5f,  0.0f,/**/ -1.0f, -1.0f,
-//         0.5f, -0.5f,  0.0f,/**/  1.0f, -1.0f,
-//        -0.5f,  0.5f,  0.0f,/**/ -1.0f,  1.0f
-//   };
-//
-//   // Triangle vertices
-//   float points2[] = {
-//         0.75f, 0.5f, 0.0f,/**/ 0.5f, 0.5f,
-//         1.0f,  0.0f, 0.0f,/**/  0.5f, -0.5f,
-//         0.75f,-0.5f, 0.0f,/**/  1.0f, 0.0f,
-//        -0.5,  -0.75, 0.0,/**/ -0.5,  -0.75,
-//         0.5,  -0.75, 0.0,/**/  0.5,  -0.75,
-//         0.0,  -1.0,  0.0,/**/  0.0,  -1.0,
-//        -0.75f, 0.5f, 0.0f,/**/ -0.75f, 0.5f,
-//        -1.0f,  0.0f, 0.0f,/**/  -1.0f,  0.0f,
-//        -0.75f,-0.5f, 0.0f,/**/  -0.75f,-0.5f,
-//        -0.5,   0.75, 0.0,/**/ -1.0, -1.0,
-//         0.5,   0.75, 0.0,/**/  1.0, -1.0,
-//         0.0,   1.0,  0.0,/**/  1.0, 1.0f
-//   };
-
    // Square vertices /**/ Texture coords
    static float points[] = {
            -0.5f,  0.5f, -1.0f,/**/ -1.0f,  1.0f,

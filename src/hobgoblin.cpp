@@ -152,7 +152,7 @@ int main() {
        glBindTexture(GL_TEXTURE_2D, texture3);
        // Use 2nd shader program with the 3nd VAO
        glBindVertexArray(vao3);
-       glDrawArrays(GL_QUADS, 0, 6*4); // draw 6-2 quads, the sides are bad for some reason
+       glDrawArrays(GL_QUADS, 0, 6*4); // draw 6 quads
 
        // cleanup
        glBindTexture(GL_TEXTURE_2D, 0);
