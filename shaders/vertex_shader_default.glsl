@@ -9,7 +9,6 @@ out vec2 TexCoord;
 uniform mat4 MVP;
 
 void main () {
-    gl_Position = /*MVP **/ vec4 (vp, 1.0);
-    //gl_Position = vec4 (vp.x, vp.y + 1.0, vp.z, 1.0);
+    gl_Position = MVP * vec4 (vp, 1.0);
     TexCoord = tp;
 }

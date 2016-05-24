@@ -22,6 +22,7 @@
 #include "graphics/shaders.h"
 #include "graphics/vertices.h"
 #include "graphics/textures.h"
+#include "camera.h"
 
 int main() {
 
@@ -30,6 +31,9 @@ int main() {
 	   fprintf (stderr, "ERROR: could not start GLFW3\n");
 	   return 1;
    }
+
+   // Anti-aliasing
+   glfwWindowHint(GLFW_SAMPLES, 4);
 
 // Create window
    GLFWwindow* window = glfwCreateWindow(640, 640, "Hobgoblin", NULL, NULL);
@@ -67,6 +71,28 @@ int main() {
    // Cull triangles which normal is not towards the camera
 //   glEnable(GL_CULL_FACE);
 
+   // Ensure we can capture the escape key being pressed below
+   glfwSetInputMode(window, GLFW_STICKY_KEYS, GL_TRUE);
+   // Hide the mouse and enable unlimited movement
+   glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+
+   // Set the mouse at the center of the screen
+   glfwPollEvents();
+   glfwSetCursorPos(window, 640/2, 640/2);
+
+   // Load shaders
+   GLuint shader_program = loadShaders(
+           "shaders/vertex_shader_default.glsl",
+           "shaders/fragment_shader_yellow.glsl");
+
+   // Get a handle for our "MVP" uniform, MVPID = Model/View/Projection Matrix ID
+   GLuint MVPID = glGetUniformLocation(shader_program, "MVP");
+
+   // Load textures
+   GLuint texture  = loadTexture("textures/wall.jpg");
+   GLuint texture2 = loadTexture("textures/roof2.jpg");
+   GLuint texture3 = loadTexture("textures/wooden_box.jpg");
+
    // Vertex buffer objects
    GLuint vbo = 0;
    vbo = generateVBO(vbo, 30 * sizeof(float), points);
@@ -83,36 +109,35 @@ int main() {
    GLuint vao3 = 0;
    vao3 = generateVAO(vao3, vbo3, 4);
 
-   // Load shaders
-   GLuint shader_program = loadShaders("shaders/vertex_shader_default.glsl", "shaders/fragment_shader_yellow.glsl");
-
-   // Load textures
-   GLuint texture = loadTexture("textures/wall.jpg");
-   GLuint texture2 = loadTexture("textures/roof2.jpg");
-   GLuint texture3 = loadTexture("textures/wooden_box.jpg");
-
    // Create background color by clearing
    glClearColor(0.2, 0.2, 0.2, 1);
-
-   // Get a handle for our "MVP" uniform
-//   GLuint MatrixID = glGetUniformLocation(shader_program, "MVP");
 
    //********************************************************************************************//
    //   Drawing loop                                                                             //
    //********************************************************************************************//
-   while (!glfwWindowShouldClose (window)) {
+   while (!glfwWindowShouldClose (window) && glfwGetKey(window, GLFW_KEY_ESCAPE ) != GLFW_PRESS) {
 
-       // wipe the drawing surface clear
+       // Clear the screen
        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
        // Wireframe or fill
 //       glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 
+       // Use the shader program
+       glUseProgram(shader_program);
+
+       // Control and camera management
+       handleControls(window);
+       glm::mat4 ProjectionMatrix = getProjectionMatrix();
+       glm::mat4 ViewMatrix = getViewMatrix();
+       glm::mat4 ModelMatrix = glm::mat4(1.0);
+       glm::mat4 MVP = ProjectionMatrix * ViewMatrix * ModelMatrix;
+
+       // Send our transformation to the currently bound shader, in the "MVP" uniform
+       glUniformMatrix4fv(MVPID, 1, GL_FALSE, &MVP[0][0]);
+
        // Bind the texture
        glBindTexture(GL_TEXTURE_2D, texture);
-
-       // Use 1st shader program with the 1st VAO
-       glUseProgram(shader_program);
 
        glBindVertexArray(vao);
        glDrawArrays(GL_TRIANGLES, 0, 2*3); // draw 2 triangles
@@ -123,11 +148,11 @@ int main() {
        glBindVertexArray(vao2);
        glDrawArrays(GL_TRIANGLES, 0, 4*3); // draw 4 triangles
 
-//       // Bind the texture
-//       glBindTexture(GL_TEXTURE_2D, texture3);
-//       // Use 2nd shader program with the 3nd VAO
-//       glBindVertexArray(vao3);
-//       glDrawArrays(GL_QUADS, 0, 4); // draw 6 quads
+       // Bind the texture
+       glBindTexture(GL_TEXTURE_2D, texture3);
+       // Use 2nd shader program with the 3nd VAO
+       glBindVertexArray(vao3);
+       glDrawArrays(GL_QUADS, 0, 4*4); // draw 6-2 quads, the sides are bad for some reason
 
        // cleanup
        glBindTexture(GL_TEXTURE_2D, 0);
