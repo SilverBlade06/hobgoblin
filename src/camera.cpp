@@ -63,23 +63,28 @@ void handleControls(GLFWwindow *window) {
    glm::vec3 cameraUp = glm::cross(cameraRight, cameraDirection);
 
    // Move forward
-   if (glfwGetKey( window, GLFW_KEY_UP ) == GLFW_PRESS) {
+   if (glfwGetKey( window, GLFW_KEY_W ) == GLFW_PRESS) {
         cameraPosition = cameraPosition + cameraDirection * deltaTime * speed;
         std::cout << "Position  x: " << cameraPosition.x << " y: " << cameraPosition.y << " z: " << cameraPosition.z << std::endl;
    }
    // Move backward
-   if (glfwGetKey( window, GLFW_KEY_DOWN ) == GLFW_PRESS) {
+   if (glfwGetKey( window, GLFW_KEY_S ) == GLFW_PRESS) {
         cameraPosition = cameraPosition - cameraDirection * deltaTime * speed;
         std::cout << "Position  x: " << cameraPosition.x << " y: " << cameraPosition.y << " z: " << cameraPosition.z << std::endl;
    }
    // Strafe right
-   if (glfwGetKey( window, GLFW_KEY_RIGHT ) == GLFW_PRESS) {
+   if (glfwGetKey( window, GLFW_KEY_D ) == GLFW_PRESS) {
         cameraPosition = cameraPosition + cameraRight * deltaTime * speed;
         std::cout << "Position  x: " << cameraPosition.x << " y: " << cameraPosition.y << " z: " << cameraPosition.z << std::endl;
    }
    // Strafe left
-   if (glfwGetKey( window, GLFW_KEY_LEFT ) == GLFW_PRESS) {
+   if (glfwGetKey( window, GLFW_KEY_A ) == GLFW_PRESS) {
         cameraPosition = cameraPosition - cameraRight * deltaTime * speed;
+        std::cout << "Position  x: " << cameraPosition.x << " y: " << cameraPosition.y << " z: " << cameraPosition.z << std::endl;
+   }
+   // Strafe left
+   if (glfwGetKey( window, GLFW_KEY_SPACE ) == GLFW_PRESS) {
+        cameraPosition = cameraPosition + cameraUp * deltaTime * speed;
         std::cout << "Position  x: " << cameraPosition.x << " y: " << cameraPosition.y << " z: " << cameraPosition.z << std::endl;
    }
 
