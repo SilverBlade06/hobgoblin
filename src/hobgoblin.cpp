@@ -28,7 +28,7 @@ int main() {
 
 // GLFW initialization
    if (!glfwInit ()) {
-	   fprintf (stderr, "ERROR: could not start GLFW3\n");
+	   std::cerr << "ERROR: could not start GLFW3" << std::endl;
 	   return 1;
    }
 
@@ -38,7 +38,7 @@ int main() {
 // Create window
    GLFWwindow* window = glfwCreateWindow(640, 640, "Hobgoblin", NULL, NULL);
    if (!window) {
-       fprintf(stderr, "ERROR: could not open window with GLFW3\n");
+       std::cerr << "ERROR: could not open window with GLFW3" << std::endl;
        glfwTerminate();
        return 2;
    }

@@ -18,7 +18,7 @@ std::string loadShaderFromFile(const char* filePath) {
             shaderCode += "\n" + Line;
         shaderStream.close();
     } else {
-        printf("Impossible to open shader!");
+        std::cerr << "Impossible to open shader!" << std::endl;
         getchar();
     }
 
