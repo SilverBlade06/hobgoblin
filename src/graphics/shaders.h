@@ -9,6 +9,7 @@
 #define SRC_GRAPHICS_SHADERS_H_
 
 #include <fstream>
+#include <iostream>
 
 // Include GLEW (ALWAYS INCLUDE **BEFORE** GLFW)
 #include <GL/glew.h>
