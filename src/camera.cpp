@@ -3,11 +3,13 @@
 //********************************************************************************************//
 #include "camera.h"
 
+//extern glm::vec3 lightPos; TODO
+
 glm::mat4 ViewMatrix;
 glm::mat4 ProjectionMatrix;
 
 // Initial position : on +Z
-glm::vec3 cameraPosition = glm::vec3(0, 0, 5);
+glm::vec3 cameraPosition = glm::vec3(0, 0, 3);
 // Initial horizontal angle : toward -Z
 float horizontalAngle = 3.14f;
 // Initial vertical angle : none
@@ -82,11 +84,44 @@ void handleControls(GLFWwindow *window) {
         cameraPosition = cameraPosition - cameraRight * deltaTime * speed;
         std::cout << "Position  x: " << cameraPosition.x << " y: " << cameraPosition.y << " z: " << cameraPosition.z << std::endl;
    }
-   // Strafe left
+   // Go up
    if (glfwGetKey( window, GLFW_KEY_SPACE ) == GLFW_PRESS) {
         cameraPosition = cameraPosition + cameraUp * deltaTime * speed;
         std::cout << "Position  x: " << cameraPosition.x << " y: " << cameraPosition.y << " z: " << cameraPosition.z << std::endl;
    }
+
+//   //*****
+//   // Move forward
+//      if (glfwGetKey( window, GLFW_KEY_I ) == GLFW_PRESS) {
+//           lightPos = lightPos - glm::vec3(0,0,-1) * deltaTime * speed;
+//           std::cout << "Position  x: " << lightPos.x << " y: " << lightPos.y << " z: " << lightPos.z << std::endl;
+//      }
+//      // Move backward
+//      if (glfwGetKey( window, GLFW_KEY_K ) == GLFW_PRESS) {
+//          lightPos = lightPos + glm::vec3(0,0,-1) * deltaTime * speed;
+//           std::cout << "Position  x: " << lightPos.x << " y: " << lightPos.y << " z: " << lightPos.z << std::endl;
+//      }
+//      // Strafe right
+//      if (glfwGetKey( window, GLFW_KEY_L ) == GLFW_PRESS) {
+//          lightPos = lightPos - glm::vec3(1,0,0) * deltaTime * speed;
+//           std::cout << "Position  x: " << lightPos.x << " y: " << lightPos.y << " z: " << lightPos.z << std::endl;
+//      }
+//      // Strafe left
+//      if (glfwGetKey( window, GLFW_KEY_J ) == GLFW_PRESS) {
+//          lightPos = lightPos + glm::vec3(1,0,0) * deltaTime * speed;
+//           std::cout << "Position  x: " << lightPos.x << " y: " << lightPos.y << " z: " << lightPos.z << std::endl;
+//      }
+//      // Go up
+//      if (glfwGetKey( window, GLFW_KEY_O ) == GLFW_PRESS) {
+//          lightPos = lightPos - glm::vec3(0,1,0) * deltaTime * speed;
+//           std::cout << "Position  x: " << lightPos.x << " y: " << lightPos.y << " z: " << lightPos.z << std::endl;
+//      }
+//
+//      if (glfwGetKey( window, GLFW_KEY_U ) == GLFW_PRESS) {
+//          lightPos = lightPos + glm::vec3(0,1,0) * deltaTime * speed;
+//           std::cout << "Position  x: " << lightPos.x << " y: " << lightPos.y << " z: " << lightPos.z << std::endl;
+//      }
+//   //*****
 
    float FoV = initialFoV;// - 5 * glfwGetMouseWheel(); // Now GLFW 3 requires setting up a callback for this. It's a bit too complicated for this beginner's tutorial, so it's disabled instead.
 

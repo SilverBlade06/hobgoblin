@@ -12,13 +12,41 @@ GLuint generateVAO(GLuint vao, GLuint vbo, GLuint verticesPerDraw) {
     glBindVertexArray(vao);
     glBindBuffer(GL_ARRAY_BUFFER, vbo);
     // Vertices
-    glVertexAttribPointer(0, verticesPerDraw, GL_FLOAT, GL_FALSE, 5 * sizeof(float), NULL);
+    glVertexAttribPointer(0, verticesPerDraw, GL_FLOAT, GL_FALSE, 8 * sizeof(float), NULL);
     glEnableVertexAttribArray(0);
     // Texture coords
-    glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 5 * sizeof(float),
+    glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 8 * sizeof(float),
             (GLvoid*) (3 * sizeof(float)));
     glEnableVertexAttribArray(1);
+    // Normal vectors
+    glVertexAttribPointer(2, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float),
+            (GLvoid*) (5 * sizeof(float)));
+    glEnableVertexAttribArray(2);
     // Cleanup
     glBindVertexArray(0);
     return vao;
+}
+
+// Calculate normals
+void calculateNormals(GLfloat *vertices, int size) {
+    for (int i = 0; i < size; i++) {
+        glm::vec3 vector1 = glm::vec3(
+                vertices[i*24+0] - vertices[i*24+8],
+                vertices[i*24+1] - vertices[i*24+9],
+                vertices[i*24+2] - vertices[i*24+10]);
+        glm::vec3 vector2 = glm::vec3(
+                vertices[i*24+16] - vertices[i*24+8],
+                vertices[i*24+17] - vertices[i*24+9],
+                vertices[i*24+18] - vertices[i*24+10]);
+        glm::vec3 normal = glm::normalize(glm::cross(vector2, vector1));
+        vertices[i*24+5] = normal.x;
+        vertices[i*24+6] = normal.y;
+        vertices[i*24+7] = normal.z;
+        vertices[i*24+13] = normal.x;
+        vertices[i*24+14] = normal.y;
+        vertices[i*24+15] = normal.z;
+        vertices[i*24+21] = normal.x;
+        vertices[i*24+22] = normal.y;
+        vertices[i*24+23] = normal.z;
+    }
 }

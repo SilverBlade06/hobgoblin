@@ -15,6 +15,7 @@
 // Include GLM
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
+#include <glm/gtc/type_ptr.hpp>
 
 // Program libraries
 #include "player.h"
@@ -69,7 +70,7 @@ int main() {
    glEnable(GL_DEPTH_TEST); // enable depth-testing
    glDepthFunc(GL_LESS); // depth-testing interprets a smaller value as "closer"
    // Cull triangles which normal is not towards the camera
-//   glEnable(GL_CULL_FACE);
+   glEnable(GL_CULL_FACE);
 
    // Ensure we can capture the escape key being pressed below
    glfwSetInputMode(window, GLFW_STICKY_KEYS, GL_TRUE);
@@ -85,21 +86,33 @@ int main() {
            "shaders/vertex_shader_default.glsl",
            "shaders/fragment_shader_yellow.glsl");
 
+   // Calculate light source
+   glm::vec3 lightPos = glm::vec3(0.2, 0.75, 1.25);
+
    // Get a handle for our "MVP" uniform, MVPID = Model/View/Projection Matrix ID
    GLuint MVPID = glGetUniformLocation(shader_program, "MVP");
+   GLuint ModelID = glGetUniformLocation(shader_program, "Model");
 
    // Load textures
    GLuint texture  = loadTexture("textures/wall.jpg");
    GLuint texture2 = loadTexture("textures/roof2.jpg");
    GLuint texture3 = loadTexture("textures/wooden_box.jpg");
 
+   // Calculate normal vectors
+   std::cout << "POINTS " << std::endl;
+   calculateNormals(points, 2);
+   std::cout << "POINTS2 " << std::endl;
+   calculateNormals(points2, 4);
+   std::cout << "CUBE " << std::endl;
+   calculateNormals(cube, 12);
+
    // Vertex buffer objects
    GLuint vbo = 0;
-   vbo = generateVBO(vbo, 30 * sizeof(float), points);
+   vbo = generateVBO(vbo, 48 * sizeof(GLfloat), points);
    GLuint vbo2 = 0;
-   vbo2 = generateVBO(vbo2, 60 * sizeof(float), points2);
+   vbo2 = generateVBO(vbo2, 96 * sizeof(GLfloat), points2);
    GLuint vbo3 = 0;
-   vbo3 = generateVBO(vbo3, 120 * sizeof(float), cube);
+   vbo3 = generateVBO(vbo3, 288 * sizeof(GLfloat), cube);
 
    // Vertex attribute objects
    GLuint vao = 0;
@@ -107,7 +120,7 @@ int main() {
    GLuint vao2 = 0;
    vao2 = generateVAO(vao2, vbo2, 3);
    GLuint vao3 = 0;
-   vao3 = generateVAO(vao3, vbo3, 4);
+   vao3 = generateVAO(vao3, vbo3, 3);
 
    // Create background color by clearing
    glClearColor(0.2, 0.2, 0.2, 1);
@@ -126,15 +139,23 @@ int main() {
        // Use the shader program
        glUseProgram(shader_program);
 
+       GLint lightPosID = glGetUniformLocation(shader_program, "lightPos");
+//       glUniform3f(lightPosID, lightPos.x, lightPos.y, lightPos.z);
+       glUniform3f(lightPosID, 0.5, 0.95, 1.5);
+
        // Control and camera management
        handleControls(window);
        glm::mat4 ProjectionMatrix = getProjectionMatrix();
        glm::mat4 ViewMatrix = getViewMatrix();
-       glm::mat4 ModelMatrix = glm::mat4(1.0);
+       glm::mat4 ModelMatrix;// = glm::mat4(1.0);
        glm::mat4 MVP = ProjectionMatrix * ViewMatrix * ModelMatrix;
 
        // Send our transformation to the currently bound shader, in the "MVP" uniform
-       glUniformMatrix4fv(MVPID, 1, GL_FALSE, &MVP[0][0]);
+       glUniformMatrix4fv(MVPID, 1, GL_FALSE, glm::value_ptr(MVP));
+       ModelMatrix = glm::mat4();
+       ModelMatrix = glm::translate(ModelMatrix, lightPos);
+       ModelMatrix = glm::scale(ModelMatrix, glm::vec3(0.2));
+       glUniformMatrix4fv(ModelID, 1, GL_FALSE, glm::value_ptr(ModelMatrix));
 
        // Bind the texture
        glBindTexture(GL_TEXTURE_2D, texture);
@@ -152,7 +173,7 @@ int main() {
        glBindTexture(GL_TEXTURE_2D, texture3);
        // Use 2nd shader program with the 3nd VAO
        glBindVertexArray(vao3);
-       glDrawArrays(GL_QUADS, 0, 6*4); // draw 6 quads
+       glDrawArrays(GL_TRIANGLES, 0, 12*3); // draw 12 triangles
 
        // cleanup
        glBindTexture(GL_TEXTURE_2D, 0);
