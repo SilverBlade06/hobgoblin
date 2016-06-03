@@ -25,6 +25,9 @@
 #include "graphics/textures.h"
 #include "camera.h"
 
+// Calculate light source
+glm::vec3 lightPos = glm::vec3(0.2f, 0.75f, 1.25f);
+
 int main() {
 
 // GLFW initialization
@@ -86,8 +89,8 @@ int main() {
            "shaders/vertex_shader_default.glsl",
            "shaders/fragment_shader_yellow.glsl");
 
-   // Calculate light source
-   glm::vec3 lightPos = glm::vec3(0.2, 0.75, 1.25);
+   // Light source
+//   glm::vec3 lightPos = glm::vec3(0.2f, 0.75f, 1.25f);
 
    // Get a handle for our "MVP" uniform, MVPID = Model/View/Projection Matrix ID
    GLuint MVPID = glGetUniformLocation(shader_program, "MVP");
@@ -140,21 +143,17 @@ int main() {
        glUseProgram(shader_program);
 
        GLint lightPosID = glGetUniformLocation(shader_program, "lightPos");
-//       glUniform3f(lightPosID, lightPos.x, lightPos.y, lightPos.z);
-       glUniform3f(lightPosID, 0.5, 0.95, 1.5);
+       glUniform3f(lightPosID, lightPos.x, lightPos.y, lightPos.z);
 
        // Control and camera management
        handleControls(window);
        glm::mat4 ProjectionMatrix = getProjectionMatrix();
        glm::mat4 ViewMatrix = getViewMatrix();
-       glm::mat4 ModelMatrix;// = glm::mat4(1.0);
+       glm::mat4 ModelMatrix = glm::mat4(1.0);
        glm::mat4 MVP = ProjectionMatrix * ViewMatrix * ModelMatrix;
 
        // Send our transformation to the currently bound shader, in the "MVP" uniform
        glUniformMatrix4fv(MVPID, 1, GL_FALSE, glm::value_ptr(MVP));
-       ModelMatrix = glm::mat4();
-       ModelMatrix = glm::translate(ModelMatrix, lightPos);
-       ModelMatrix = glm::scale(ModelMatrix, glm::vec3(0.2));
        glUniformMatrix4fv(ModelID, 1, GL_FALSE, glm::value_ptr(ModelMatrix));
 
        // Bind the texture
