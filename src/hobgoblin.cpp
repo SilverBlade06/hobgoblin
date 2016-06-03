@@ -142,6 +142,9 @@ int main() {
        // Use the shader program
        glUseProgram(shader_program);
 
+       GLint cameraPosID = glGetUniformLocation(shader_program, "cameraPosition");
+       glUniform3f(cameraPosID, getCameraPosition().x, getCameraPosition().y, getCameraPosition().z);
+
        GLint lightPosID = glGetUniformLocation(shader_program, "lightPos");
        glUniform3f(lightPosID, lightPos.x, lightPos.y, lightPos.z);
 

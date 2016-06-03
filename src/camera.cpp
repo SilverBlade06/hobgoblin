@@ -28,6 +28,10 @@ glm::mat4 getProjectionMatrix() {
     return ProjectionMatrix;
 }
 
+glm::vec3 getCameraPosition() {
+    return cameraPosition;
+}
+
 void handleControls(GLFWwindow *window) {
     // glfwGetTime is called only once, the first time this function is called
    static double lastTime = glfwGetTime();

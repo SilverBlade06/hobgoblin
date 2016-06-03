@@ -13,9 +13,8 @@
 #define SRC_CAMERA_H_
 
 glm::mat4 getViewMatrix();
-
 glm::mat4 getProjectionMatrix();
-
+glm::vec3 getCameraPosition();
 void handleControls(GLFWwindow* window);
 
 #endif /* SRC_CAMERA_H_ */
