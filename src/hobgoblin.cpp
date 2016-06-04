@@ -149,6 +149,17 @@ int main() {
        GLint lightPosID = glGetUniformLocation(shader_program, "lightPos");
        glUniform3f(lightPosID, lightPos.x, lightPos.y, lightPos.z);
 
+       // Material properties
+       GLint materialAmbientID  = glGetUniformLocation(shader_program, "material.ambient");
+       GLint materialDiffuseID  = glGetUniformLocation(shader_program, "material.diffuse");
+       GLint materialSpecularID = glGetUniformLocation(shader_program, "material.specular");
+       GLint materialShineID    = glGetUniformLocation(shader_program, "material.shininess");
+
+       glUniform3f(materialAmbientID,  0.5f, 0.5f, 0.75f);
+       glUniform3f(materialDiffuseID,  1.0f, 1.0f, 0.0f);
+       glUniform3f(materialSpecularID, 1.0f, 1.0f, 1.0f);
+       glUniform1f(materialShineID,    128.0f);
+
        // Control and camera management
        handleControls(window);
        glm::mat4 ProjectionMatrix = getProjectionMatrix();
