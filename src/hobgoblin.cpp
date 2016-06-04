@@ -25,7 +25,7 @@
 #include "graphics/textures.h"
 #include "camera.h"
 
-// Calculate light source
+// Light source
 glm::vec3 lightPos = glm::vec3(0.2f, 0.75f, 1.25f);
 
 int main() {
@@ -40,7 +40,9 @@ int main() {
    glfwWindowHint(GLFW_SAMPLES, 4);
 
 // Create window
-   GLFWwindow* window = glfwCreateWindow(640, 640, "Hobgoblin", NULL, NULL);
+   int windowWidth = getWindowWidth();
+   int windowHeight = getWindowHeight();
+   GLFWwindow* window = glfwCreateWindow(windowWidth, windowHeight, "Hobgoblin", NULL, NULL);
    if (!window) {
        std::cerr << "ERROR: could not open window with GLFW3" << std::endl;
        glfwTerminate();
@@ -82,7 +84,7 @@ int main() {
 
    // Set the mouse at the center of the screen
    glfwPollEvents();
-   glfwSetCursorPos(window, 640/2, 640/2);
+   glfwSetCursorPos(window, windowWidth/2, windowHeight/2);
 
    // Load shaders
    GLuint shader_program = loadShaders(
@@ -102,11 +104,8 @@ int main() {
    GLuint texture3 = loadTexture("textures/wooden_box.jpg");
 
    // Calculate normal vectors
-   std::cout << "POINTS " << std::endl;
    calculateNormals(points, 2);
-   std::cout << "POINTS2 " << std::endl;
    calculateNormals(points2, 4);
-   std::cout << "CUBE " << std::endl;
    calculateNormals(cube, 12);
 
    // Vertex buffer objects
@@ -142,9 +141,11 @@ int main() {
        // Use the shader program
        glUseProgram(shader_program);
 
+       // Camera position
        GLint cameraPosID = glGetUniformLocation(shader_program, "cameraPosition");
        glUniform3f(cameraPosID, getCameraPosition().x, getCameraPosition().y, getCameraPosition().z);
 
+       // Light position
        GLint lightPosID = glGetUniformLocation(shader_program, "lightPos");
        glUniform3f(lightPosID, lightPos.x, lightPos.y, lightPos.z);
 

@@ -8,6 +8,9 @@ extern glm::vec3 lightPos; //TODO
 glm::mat4 ViewMatrix;
 glm::mat4 ProjectionMatrix;
 
+int windowWidth = 640;
+int windowHeight = 480;
+
 // Initial position : on +Z
 glm::vec3 cameraPosition = glm::vec3(0, 0, 3);
 // Initial horizontal angle : toward -Z
@@ -19,6 +22,14 @@ float initialFoV = 45.0f;
 
 float speed = 3.0f; // 3 units / second
 float mouseSpeed = 0.005f;
+
+int getWindowWidth() {
+    return windowWidth;
+}
+
+int getWindowHeight() {
+    return windowHeight;
+}
 
 glm::mat4 getViewMatrix() {
     return ViewMatrix;
@@ -45,11 +56,11 @@ void handleControls(GLFWwindow *window) {
    glfwGetCursorPos(window, &xpos, &ypos);
 
    // Reset mouse position for next frame
-   glfwSetCursorPos(window, 640/2, 640/2);
+   glfwSetCursorPos(window, windowWidth/2, windowHeight/2);
 
    // Compute new orientation
-   horizontalAngle = horizontalAngle + mouseSpeed * float(640/2 - xpos);
-   verticalAngle   = verticalAngle   + mouseSpeed * float(640/2 - ypos);
+   horizontalAngle = horizontalAngle + mouseSpeed * float(windowWidth/2 - xpos);
+   verticalAngle   = verticalAngle   + mouseSpeed * float(windowHeight/2 - ypos);
 
    // Direction : Spherical coordinates to Cartesian coordinates conversion
    glm::vec3 cameraDirection(
@@ -98,39 +109,33 @@ void handleControls(GLFWwindow *window) {
    // Move forward
    if (glfwGetKey( window, GLFW_KEY_I ) == GLFW_PRESS) {
        lightPos = lightPos + glm::vec3(0,0,-1) * deltaTime * speed;
-//       std::cout << "Position  x: " << lightPos.x << " y: " << lightPos.y << " z: " << lightPos.z << std::endl;
    }
    // Move backward
    if (glfwGetKey( window, GLFW_KEY_K ) == GLFW_PRESS) {
        lightPos = lightPos - glm::vec3(0,0,-1) * deltaTime * speed;
-//       std::cout << "Position  x: " << lightPos.x << " y: " << lightPos.y << " z: " << lightPos.z << std::endl;
    }
    // Strafe right
    if (glfwGetKey( window, GLFW_KEY_L ) == GLFW_PRESS) {
        lightPos = lightPos + glm::vec3(1,0,0) * deltaTime * speed;
-//       std::cout << "Position  x: " << lightPos.x << " y: " << lightPos.y << " z: " << lightPos.z << std::endl;
    }
    // Strafe left
    if (glfwGetKey( window, GLFW_KEY_J ) == GLFW_PRESS) {
        lightPos = lightPos - glm::vec3(1,0,0) * deltaTime * speed;
-//       std::cout << "Position  x: " << lightPos.x << " y: " << lightPos.y << " z: " << lightPos.z << std::endl;
    }
    // Go up
    if (glfwGetKey( window, GLFW_KEY_O ) == GLFW_PRESS) {
        lightPos = lightPos + glm::vec3(0,1,0) * deltaTime * speed;
-//       std::cout << "Position  x: " << lightPos.x << " y: " << lightPos.y << " z: " << lightPos.z << std::endl;
    }
 
    if (glfwGetKey( window, GLFW_KEY_U ) == GLFW_PRESS) {
        lightPos = lightPos - glm::vec3(0,1,0) * deltaTime * speed;
-//       std::cout << "Position  x: " << lightPos.x << " y: " << lightPos.y << " z: " << lightPos.z << std::endl;
    }
    //*****
 
    float FoV = initialFoV;// - 5 * glfwGetMouseWheel(); // Now GLFW 3 requires setting up a callback for this. It's a bit too complicated for this beginner's tutorial, so it's disabled instead.
 
    // Projection matrix : 45° Field of View, 4:3 ratio, display range : 0.1 unit <-> 100 units
-   ProjectionMatrix = glm::perspective(FoV, 4.0f / 3.0f, 0.1f, 100.0f);
+   ProjectionMatrix = glm::perspective(FoV, (float)windowWidth / (float)windowHeight, 0.1f, 100.0f);
    // Camera matrix
    ViewMatrix       = glm::lookAt(
            cameraPosition,                   // Camera is here

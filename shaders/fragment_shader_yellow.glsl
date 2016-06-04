@@ -30,7 +30,7 @@ void main () {
 	vec3 specular = specularStrength * spec * vec3(1.0); //lightColor
 	
     //vec4 precolor = texture(ourTexture, TexCoord);
-    //color = vec4((ambient + diffuse),1) * precolor;
+    //color = vec4((ambient + diffuse + specular),1) * precolor;
     vec3 precolor = vec3(0.5);
     color = vec4((ambient + diffuse + specular) * precolor,1);
 }

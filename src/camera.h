@@ -12,6 +12,8 @@
 #ifndef SRC_CAMERA_H_
 #define SRC_CAMERA_H_
 
+int getWindowWidth();
+int getWindowHeight();
 glm::mat4 getViewMatrix();
 glm::mat4 getProjectionMatrix();
 glm::vec3 getCameraPosition();

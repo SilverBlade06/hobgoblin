@@ -14,8 +14,8 @@
 GLuint generateVBO(GLuint vbo, GLsizeiptr size, const GLvoid * data);
 GLuint generateVAO(GLuint vao, GLuint vbo, GLuint verticesPerDraw);
 void calculateNormals(GLfloat *vertices, int size);
-
-   // Square vertices /**/ Texture coords
+// Vertices /**/ Texture coords /**/ Normals
+   // Square vertices
    static GLfloat points[] = {
             0.5f, -0.5f, -1.0f,/**/  0.0f,  1.0f, /**/ 0.0, 0.0, 0.0,
             0.5f,  0.5f, -1.0f,/**/  1.0f,  1.0f, /**/ 0.0, 0.0, 0.0,
