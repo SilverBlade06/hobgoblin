@@ -20,13 +20,12 @@
 // Program libraries
 #include "player.h"
 #include "../system/diagnostics.h"
+#include "controls/lightController.h"
 #include "graphics/shaders.h"
 #include "graphics/vertices.h"
 #include "graphics/textures.h"
+#include "graphics/light.h"
 #include "camera.h"
-
-// Light source
-glm::vec3 lightPos = glm::vec3(0.2f, 0.75f, 1.25f);
 
 int main() {
 
@@ -92,7 +91,14 @@ int main() {
            "shaders/fragment_shader_yellow.glsl");
 
    // Light source
-//   glm::vec3 lightPos = glm::vec3(0.2f, 0.75f, 1.25f);
+   glm::vec3 lightPos = glm::vec3(0.2f, 0.6f, 1.25f);
+   glm::vec3 ambient  = glm::vec3(1.0f, 1.0f, 0.0f);
+   glm::vec3 diffuse  = glm::vec3(1.0f, 1.0f, 0.0f);
+   glm::vec3 specular = glm::vec3(1.0f, 1.0f, 0.0f);
+   Light* light = new Light(lightPos, ambient, diffuse, specular);
+
+   // Control the light
+   LightController *lightController = new LightController(window, light);
 
    // Get a handle for our "MVP" uniform, MVPID = Model/View/Projection Matrix ID
    GLuint MVPID = glGetUniformLocation(shader_program, "MVP");
@@ -147,7 +153,9 @@ int main() {
 
        // Light position
        GLint lightPosID = glGetUniformLocation(shader_program, "lightPos");
-       glUniform3f(lightPosID, lightPos.x, lightPos.y, lightPos.z);
+       glUniform3f(lightPosID, light->getLightPos().x, light->getLightPos().y, light->getLightPos().z);
+       // Control light
+       lightController->control();
 
        // Material properties
        GLint materialAmbientID  = glGetUniformLocation(shader_program, "material.ambient");

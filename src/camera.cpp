@@ -3,8 +3,6 @@
 //********************************************************************************************//
 #include "camera.h"
 
-extern glm::vec3 lightPos; //TODO
-
 glm::mat4 ViewMatrix;
 glm::mat4 ProjectionMatrix;
 
@@ -104,33 +102,6 @@ void handleControls(GLFWwindow *window) {
         cameraPosition = cameraPosition + cameraUp * deltaTime * speed;
         std::cout << "Position  x: " << cameraPosition.x << " y: " << cameraPosition.y << " z: " << cameraPosition.z << std::endl;
    }
-
-   //*****
-   // Move forward
-   if (glfwGetKey( window, GLFW_KEY_I ) == GLFW_PRESS) {
-       lightPos = lightPos + glm::vec3(0,0,-1) * deltaTime * speed;
-   }
-   // Move backward
-   if (glfwGetKey( window, GLFW_KEY_K ) == GLFW_PRESS) {
-       lightPos = lightPos - glm::vec3(0,0,-1) * deltaTime * speed;
-   }
-   // Strafe right
-   if (glfwGetKey( window, GLFW_KEY_L ) == GLFW_PRESS) {
-       lightPos = lightPos + glm::vec3(1,0,0) * deltaTime * speed;
-   }
-   // Strafe left
-   if (glfwGetKey( window, GLFW_KEY_J ) == GLFW_PRESS) {
-       lightPos = lightPos - glm::vec3(1,0,0) * deltaTime * speed;
-   }
-   // Go up
-   if (glfwGetKey( window, GLFW_KEY_O ) == GLFW_PRESS) {
-       lightPos = lightPos + glm::vec3(0,1,0) * deltaTime * speed;
-   }
-
-   if (glfwGetKey( window, GLFW_KEY_U ) == GLFW_PRESS) {
-       lightPos = lightPos - glm::vec3(0,1,0) * deltaTime * speed;
-   }
-   //*****
 
    float FoV = initialFoV;// - 5 * glfwGetMouseWheel(); // Now GLFW 3 requires setting up a callback for this. It's a bit too complicated for this beginner's tutorial, so it's disabled instead.
 
