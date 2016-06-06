@@ -1,7 +1,7 @@
 #ifndef SRC_PLAYER_H_
 #define SRC_PLAYER_H_
 
-#include "inventory.h"
+#include "Inventory.h"
 
 class Player {
 private:

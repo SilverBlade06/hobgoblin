@@ -16,7 +16,7 @@
 // Include GLM
 #include <glm/glm.hpp>
 
-#include "../graphics/light.h"
+#include "../graphics/Light.h"
 
 class LightController {
 private:

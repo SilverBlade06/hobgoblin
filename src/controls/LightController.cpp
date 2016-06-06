@@ -5,7 +5,7 @@
  *      Author: SilverBlade
  */
 
-#include "lightController.h"
+#include "LightController.h"
 
 LightController::LightController(GLFWwindow* window, Light* light) {
    this->window = window;

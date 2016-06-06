@@ -5,7 +5,7 @@
  *      Author: SilverBlade
  */
 
-#include "item.h"
+#include "Item.h"
 
 Item::Item() {
 	// TODO Auto-generated constructor stub

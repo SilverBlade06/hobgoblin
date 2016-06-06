@@ -1,5 +1,6 @@
-#include "inventory.h"
-#include "player.h"
+#include "Player.h"
+
+#include "Inventory.h"
 
 	short Player::getHp(){
 		return hp;

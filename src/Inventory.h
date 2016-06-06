@@ -1,7 +1,7 @@
 #ifndef SRC_INVENTORY_H_
 #define SRC_INVENTORY_H_
 
-#include "item.h"
+#include "Item.h"
 
 class Inventory {
 private:

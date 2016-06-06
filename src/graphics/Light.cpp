@@ -5,7 +5,7 @@
  *      Author: SilverBlade
  */
 
-#include "light.h"
+#include "Light.h"
 
 Light::Light() {
     this->lightPos = glm::vec3(0.0, 0.0, 0.0);

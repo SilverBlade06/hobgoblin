@@ -18,14 +18,14 @@
 #include <glm/gtc/type_ptr.hpp>
 
 // Program libraries
-#include "player.h"
 #include "../system/diagnostics.h"
-#include "controls/lightController.h"
 #include "graphics/shaders.h"
 #include "graphics/vertices.h"
 #include "graphics/textures.h"
-#include "graphics/light.h"
 #include "camera.h"
+#include "controls/LightController.h"
+#include "graphics/Light.h"
+#include "Player.h"
 
 int main() {
 
