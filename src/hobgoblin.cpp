@@ -19,12 +19,13 @@
 
 // Program libraries
 #include "../system/diagnostics.h"
-#include "graphics/shaders.h"
-#include "graphics/vertices.h"
-#include "graphics/textures.h"
-#include "camera.h"
 #include "controls/LightController.h"
+#include "camera.h"
 #include "graphics/Light.h"
+#include "graphics/Material.h"
+#include "graphics/shaders.h"
+#include "graphics/textures.h"
+#include "graphics/vertices.h"
 #include "Player.h"
 
 int main() {
@@ -39,8 +40,8 @@ int main() {
    glfwWindowHint(GLFW_SAMPLES, 4);
 
 // Create window
-   int windowWidth = getWindowWidth();
-   int windowHeight = getWindowHeight();
+   GLint windowWidth = getWindowWidth();
+   GLint windowHeight = getWindowHeight();
    GLFWwindow* window = glfwCreateWindow(windowWidth, windowHeight, "Hobgoblin", NULL, NULL);
    if (!window) {
        std::cerr << "ERROR: could not open window with GLFW3" << std::endl;
@@ -92,13 +93,24 @@ int main() {
 
    // Light source
    glm::vec3 lightPos = glm::vec3(0.2f, 0.6f, 1.25f);
-   glm::vec3 ambient  = glm::vec3(1.0f, 1.0f, 0.0f);
+   glm::vec3 ambient  = glm::vec3(1.0f, 1.0f, 1.0f);
    glm::vec3 diffuse  = glm::vec3(1.0f, 1.0f, 0.0f);
-   glm::vec3 specular = glm::vec3(1.0f, 1.0f, 0.0f);
+   glm::vec3 specular = glm::vec3(1.0f, 1.0f, 1.0f);
    Light* light = new Light(lightPos, ambient, diffuse, specular);
 
    // Control the light
-   LightController *lightController = new LightController(window, light);
+   LightController* lightController = new LightController(window, light);
+
+   // Material
+   glm::vec3 materialAmbient  = glm::vec3(0.5f, 0.5f, 0.75f);
+   glm::vec3 materialDiffuse  = glm::vec3(1.0f, 1.0f, 0.0f);
+   glm::vec3 materialSpecular = glm::vec3(1.0f, 1.0f, 1.0f);
+   GLfloat shininess = 128.0;
+   Material* material = new Material(
+           materialAmbient,
+           materialDiffuse,
+           materialSpecular,
+           shininess);
 
    // Get a handle for our "MVP" uniform, MVPID = Model/View/Projection Matrix ID
    GLuint MVPID = glGetUniformLocation(shader_program, "MVP");
@@ -152,8 +164,14 @@ int main() {
        glUniform3f(cameraPosID, getCameraPosition().x, getCameraPosition().y, getCameraPosition().z);
 
        // Light position
-       GLint lightPosID = glGetUniformLocation(shader_program, "lightPos");
+       GLint lightPosID      = glGetUniformLocation(shader_program, "light.position");
+       GLint lightAmbientID  = glGetUniformLocation(shader_program, "light.ambient");
+       GLint lightDiffuseID  = glGetUniformLocation(shader_program, "light.diffuse");
+       GLint lightSpecularID = glGetUniformLocation(shader_program, "light.specular");
        glUniform3f(lightPosID, light->getLightPos().x, light->getLightPos().y, light->getLightPos().z);
+       glUniform3f(lightAmbientID, light->getAmbient().r, light->getAmbient().g, light->getAmbient().b);
+       glUniform3f(lightDiffuseID, light->getDiffuse().r, light->getDiffuse().g, light->getDiffuse().b);
+       glUniform3f(lightSpecularID, light->getSpecular().r, light->getSpecular().g, light->getSpecular().b);
        // Control light
        lightController->control();
 
@@ -163,10 +181,10 @@ int main() {
        GLint materialSpecularID = glGetUniformLocation(shader_program, "material.specular");
        GLint materialShineID    = glGetUniformLocation(shader_program, "material.shininess");
 
-       glUniform3f(materialAmbientID,  0.5f, 0.5f, 0.75f);
-       glUniform3f(materialDiffuseID,  1.0f, 1.0f, 0.0f);
-       glUniform3f(materialSpecularID, 1.0f, 1.0f, 1.0f);
-       glUniform1f(materialShineID,    128.0f);
+       glUniform3f(materialAmbientID,  material->getAmbient().r, material->getAmbient().g, material->getAmbient().b);
+       glUniform3f(materialDiffuseID,  material->getDiffuse().r, material->getDiffuse().g, material->getDiffuse().b);
+       glUniform3f(materialSpecularID, material->getSpecular().r, material->getSpecular().g, material->getSpecular().b);
+       glUniform1f(materialShineID,    material->getShininess());
 
        // Control and camera management
        handleControls(window);
