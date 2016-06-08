@@ -20,11 +20,10 @@
 
 class LightController {
 private:
-    GLFWwindow* window;
     Light* light;
 public:
-    LightController(GLFWwindow* window, Light* light);
-    void control();
+    LightController(Light* light);
+    void control(GLFWwindow* window);
     virtual ~LightController();
 };
 

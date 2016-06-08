@@ -7,12 +7,11 @@
 
 #include "LightController.h"
 
-LightController::LightController(GLFWwindow* window, Light* light) {
-   this->window = window;
+LightController::LightController(Light* light) {
    this->light = light;
 }
 
-void LightController::control() {
+void LightController::control(GLFWwindow* window) {
    float speed = 3.0f; // 3 units / second
     // glfwGetTime is called only once, the first time this function is called
    static double lastTime = glfwGetTime();
