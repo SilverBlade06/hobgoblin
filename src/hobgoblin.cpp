@@ -136,6 +136,7 @@ int main() {
    // Get a handle for our "MVP" uniform, MVPID = Model/View/Projection Matrix ID
    GLuint MVPID = glGetUniformLocation(shader_program, "MVP");
    GLuint ModelID = glGetUniformLocation(shader_program, "Model");
+   GLuint ModelTransformedID = glGetUniformLocation(shader_program, "ModelTransformed");
 
    // Load textures
    GLuint texture  = loadTexture("textures/wall.jpg");
@@ -173,7 +174,6 @@ int main() {
    //   Drawing loop                                                                             //
    //********************************************************************************************//
    while (!glfwWindowShouldClose (window) && glfwGetKey(window, GLFW_KEY_ESCAPE ) != GLFW_PRESS) {
-
        // glfwGetTime is called only once, the first time this function is called
        static float lastTime = glfwGetTime();
 
@@ -228,12 +228,14 @@ int main() {
 
        glm::mat4 ProjectionMatrix = camera.getProjectionMatrix();
        glm::mat4 ViewMatrix = camera.getViewMatrix();
-       glm::mat4 ModelMatrix = glm::mat4(1.0);
+       glm::mat4 ModelMatrix;
+       glm::mat4 ModelMatrixTransformed = glm::transpose(glm::inverse(glm::mat4(1.0)));
        glm::mat4 MVP = ProjectionMatrix * ViewMatrix * ModelMatrix;
 
        // Send our transformation to the currently bound shader, in the "MVP" uniform
        glUniformMatrix4fv(MVPID, 1, GL_FALSE, glm::value_ptr(MVP));
        glUniformMatrix4fv(ModelID, 1, GL_FALSE, glm::value_ptr(ModelMatrix));
+       glUniformMatrix4fv(ModelTransformedID, 1, GL_FALSE, glm::value_ptr(ModelMatrixTransformed));
 
        // Bind the texture
        glBindTexture(GL_TEXTURE_2D, texture);

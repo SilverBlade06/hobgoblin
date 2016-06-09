@@ -11,10 +11,11 @@ out vec3 FragPos;
 // Values that stay constant for the whole mesh.
 uniform mat4 MVP;
 uniform mat4 Model;
+uniform mat4 ModelTransformed;
 
 void main () {
     gl_Position = MVP * vec4 (vertexPosition, 1.0);
     TexCoord = texturePosition;
     FragPos = vec3(Model * vec4(vertexPosition, 1.0f));
-    Normal = mat3(transpose(inverse(Model))) * normal;
+    Normal = mat3(ModelTransformed) * normal;
 }
