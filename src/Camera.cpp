@@ -71,12 +71,6 @@ Camera::Camera(glm::vec3 position, GLfloat horizontalAngle, GLfloat verticalAngl
 }
 
 void Camera::handleControls(GLFWwindow* window, GLfloat windowWidth, GLfloat windowHeight, float deltaTime) {
-//    // glfwGetTime is called only once, the first time this function is called
-//   static double lastTime = glfwGetTime();
-//
-//   // Compute time difference between current and last frame
-//   double currentTime = glfwGetTime();
-//   float deltaTime = float(currentTime - lastTime);
 
    // Get mouse position
    double xpos, ypos;
@@ -142,64 +136,6 @@ void Camera::handleControls(GLFWwindow* window, GLfloat windowWidth, GLfloat win
    );
 
 }
-
-//void Camera::keyboardMove(CameraMovement direction) {
-//   // glfwGetTime is called only once, the first time this function is called
-//   static double lastTime = glfwGetTime();
-//
-//   // Compute time difference between current and last frame
-//   double currentTime = glfwGetTime();
-//   float deltaTime = float(currentTime - lastTime);
-//
-//   // Direction : Spherical coordinates to Cartesian coordinates conversion
-//   glm::vec3 moveDirection(
-//       cos(verticalAngle) * sin(horizontalAngle),
-//       sin(verticalAngle),
-//       cos(verticalAngle) * cos(horizontalAngle)
-//   );
-//
-//   // Right vector
-//   glm::vec3 rightVec = glm::vec3(
-//       sin(horizontalAngle - 3.14f/2.0f),
-//       0,
-//       cos(horizontalAngle - 3.14f/2.0f)
-//   );
-//
-//   // Up vector
-//   glm::vec3 upVec = glm::cross(rightVec, moveDirection);
-//
-//   // Move forward
-//   if (direction == FORWARD) {
-//       position = position + moveDirection * deltaTime * speed;
-//       std::cout << "Position  x: " << position.x << " y: " << position.y << " z: " << position.z << std::endl;
-//   }
-//   // Move backward
-//   if (direction == BACKWARD) {
-//       position = position - moveDirection * deltaTime * speed;
-//       std::cout << "Position  x: " << position.x << " y: " << position.y << " z: " << position.z << std::endl;
-//   }
-//   // Strafe right
-//   if (direction == RIGHT) {
-//       position = position + rightVec * deltaTime * speed;
-//       std::cout << "Position  x: " << position.x << " y: " << position.y << " z: " << position.z << std::endl;
-//   }
-//   // Strafe left
-//   if (direction == LEFT) {
-//       position = position - rightVec * deltaTime * speed;
-//       std::cout << "Position  x: " << position.x << " y: " << position.y << " z: " << position.z << std::endl;
-//   }
-//   // Go up
-//   if (direction == UP) {
-//       position = position + upVec * deltaTime * speed;
-//       std::cout << "Position  x: " << position.x << " y: " << position.y << " z: " << position.z << std::endl;
-//   }
-//   // For the next frame, the "last time" will be "now"
-//   lastTime = currentTime;
-//}
-//
-//void Camera::mouseMove(GLfloat xOffset, GLfloat yOffset) {
-//
-//}
 
 Camera::~Camera() {
 

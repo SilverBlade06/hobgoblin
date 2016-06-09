@@ -48,8 +48,6 @@ public:
    GLfloat getFov() const;
    void setFov(GLfloat fov);
    void handleControls(GLFWwindow* window, GLfloat windowWidth, GLfloat windowHeight, float deltaTime);
-//   void keyboardMove(CameraMovement direction);
-//   void mouseMove(GLfloat xOffset, GLfloat yOffset);
    ~Camera();
 };
 
