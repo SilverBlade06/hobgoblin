@@ -80,12 +80,12 @@ int main() {
    std::cout << "Hobgoblin starting..." << std::endl;
    std::cout << "Started!" << std::endl;
    std::cout << "Creating player..." << std::endl;
-   Player* player = new Player();
+   Player player;
    std::cout << "Done!" << std::endl;
    std::cout << "Player location at" << std::endl;
-   std::cout << "X: " << player->getLocationX() << std::endl;
-   std::cout << "Y: " << player->getLocationY() << std::endl;
-   std::cout << "HP: " << player->getHp() << std::endl;
+   std::cout << "X: " << player.getLocationX() << std::endl;
+   std::cout << "Y: " << player.getLocationY() << std::endl;
+   std::cout << "HP: " << player.getHp() << std::endl;
    std::cout << "Inventory initialized to empty." << std::endl;
 
    // tell GL to only draw onto a pixel if the shape is closer to the viewer
