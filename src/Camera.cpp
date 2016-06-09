@@ -3,6 +3,8 @@
 //********************************************************************************************//
 #include "Camera.h"
 
+extern bool keys[1024];
+
 float speed = 3.0f; // 3 units / second
 float mouseSpeed = 0.005f;
 
@@ -68,13 +70,13 @@ Camera::Camera(glm::vec3 position, GLfloat horizontalAngle, GLfloat verticalAngl
    this->fov = fov;
 }
 
-void Camera::handleControls(GLFWwindow* window, GLfloat windowWidth, GLfloat windowHeight) {
-    // glfwGetTime is called only once, the first time this function is called
-   static double lastTime = glfwGetTime();
-
-   // Compute time difference between current and last frame
-   double currentTime = glfwGetTime();
-   float deltaTime = float(currentTime - lastTime);
+void Camera::handleControls(GLFWwindow* window, GLfloat windowWidth, GLfloat windowHeight, float deltaTime) {
+//    // glfwGetTime is called only once, the first time this function is called
+//   static double lastTime = glfwGetTime();
+//
+//   // Compute time difference between current and last frame
+//   double currentTime = glfwGetTime();
+//   float deltaTime = float(currentTime - lastTime);
 
    // Get mouse position
    double xpos, ypos;
@@ -105,27 +107,27 @@ void Camera::handleControls(GLFWwindow* window, GLfloat windowWidth, GLfloat win
    glm::vec3 upVec = glm::cross(rightVec, direction);
 
    // Move forward
-   if (glfwGetKey( window, GLFW_KEY_W ) == GLFW_PRESS) {
+   if (keys[GLFW_KEY_W]) {
         position = position + direction * deltaTime * speed;
         std::cout << "Position  x: " << position.x << " y: " << position.y << " z: " << position.z << std::endl;
    }
    // Move backward
-   if (glfwGetKey( window, GLFW_KEY_S ) == GLFW_PRESS) {
+   if (keys[GLFW_KEY_S]) {
         position = position - direction * deltaTime * speed;
         std::cout << "Position  x: " << position.x << " y: " << position.y << " z: " << position.z << std::endl;
    }
    // Strafe right
-   if (glfwGetKey( window, GLFW_KEY_D ) == GLFW_PRESS) {
+   if (keys[GLFW_KEY_D]) {
         position = position + rightVec * deltaTime * speed;
         std::cout << "Position  x: " << position.x << " y: " << position.y << " z: " << position.z << std::endl;
    }
    // Strafe left
-   if (glfwGetKey( window, GLFW_KEY_A ) == GLFW_PRESS) {
+   if (keys[GLFW_KEY_A]) {
         position = position - rightVec * deltaTime * speed;
         std::cout << "Position  x: " << position.x << " y: " << position.y << " z: " << position.z << std::endl;
    }
    // Go up
-   if (glfwGetKey( window, GLFW_KEY_SPACE ) == GLFW_PRESS) {
+   if (keys[GLFW_KEY_SPACE]) {
         position = position + upVec * deltaTime * speed;
         std::cout << "Position  x: " << position.x << " y: " << position.y << " z: " << position.z << std::endl;
    }
@@ -139,10 +141,67 @@ void Camera::handleControls(GLFWwindow* window, GLfloat windowWidth, GLfloat win
            upVec                 // Head is up (set to 0,-1,0 to look upside-down)
    );
 
-   // For the next frame, the "last time" will be "now"
-   lastTime = currentTime;
 }
+
+//void Camera::keyboardMove(CameraMovement direction) {
+//   // glfwGetTime is called only once, the first time this function is called
+//   static double lastTime = glfwGetTime();
+//
+//   // Compute time difference between current and last frame
+//   double currentTime = glfwGetTime();
+//   float deltaTime = float(currentTime - lastTime);
+//
+//   // Direction : Spherical coordinates to Cartesian coordinates conversion
+//   glm::vec3 moveDirection(
+//       cos(verticalAngle) * sin(horizontalAngle),
+//       sin(verticalAngle),
+//       cos(verticalAngle) * cos(horizontalAngle)
+//   );
+//
+//   // Right vector
+//   glm::vec3 rightVec = glm::vec3(
+//       sin(horizontalAngle - 3.14f/2.0f),
+//       0,
+//       cos(horizontalAngle - 3.14f/2.0f)
+//   );
+//
+//   // Up vector
+//   glm::vec3 upVec = glm::cross(rightVec, moveDirection);
+//
+//   // Move forward
+//   if (direction == FORWARD) {
+//       position = position + moveDirection * deltaTime * speed;
+//       std::cout << "Position  x: " << position.x << " y: " << position.y << " z: " << position.z << std::endl;
+//   }
+//   // Move backward
+//   if (direction == BACKWARD) {
+//       position = position - moveDirection * deltaTime * speed;
+//       std::cout << "Position  x: " << position.x << " y: " << position.y << " z: " << position.z << std::endl;
+//   }
+//   // Strafe right
+//   if (direction == RIGHT) {
+//       position = position + rightVec * deltaTime * speed;
+//       std::cout << "Position  x: " << position.x << " y: " << position.y << " z: " << position.z << std::endl;
+//   }
+//   // Strafe left
+//   if (direction == LEFT) {
+//       position = position - rightVec * deltaTime * speed;
+//       std::cout << "Position  x: " << position.x << " y: " << position.y << " z: " << position.z << std::endl;
+//   }
+//   // Go up
+//   if (direction == UP) {
+//       position = position + upVec * deltaTime * speed;
+//       std::cout << "Position  x: " << position.x << " y: " << position.y << " z: " << position.z << std::endl;
+//   }
+//   // For the next frame, the "last time" will be "now"
+//   lastTime = currentTime;
+//}
+//
+//void Camera::mouseMove(GLfloat xOffset, GLfloat yOffset) {
+//
+//}
 
 Camera::~Camera() {
 
 }
+

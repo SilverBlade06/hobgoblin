@@ -12,6 +12,16 @@
 #ifndef SRC_CAMERA_H_
 #define SRC_CAMERA_H_
 
+//static bool keys[1024];
+
+enum CameraMovement {
+    FORWARD,
+    BACKWARD,
+    LEFT,
+    RIGHT,
+    UP
+};
+
 class Camera {
 private:
    glm::mat4 ViewMatrix;
@@ -25,41 +35,22 @@ public:
    Camera();
    Camera(glm::vec3 position, GLfloat horizontalAngle, GLfloat verticalAngle, GLfloat fov);
    glm::mat4 getViewMatrix();
+   void setViewMatrix(const glm::mat4& viewMatrix);
    glm::mat4 getProjectionMatrix();
+   void setProjectionMatrix(const glm::mat4& projectionMatrix);
+
    glm::vec3 getPosition();
+   void setPosition(const glm::vec3& position);
    GLfloat getHorizontalAngle();
+   void setHorizontalAngle(GLfloat horizontalAngle);
    GLfloat getVerticalAngle();
-   GLfloat getFoV();
-   void handleControls(GLFWwindow* window, GLfloat windowWidth, GLfloat windowHeight);
+   void setVerticalAngle(GLfloat verticalAngle);
+   GLfloat getFov() const;
+   void setFov(GLfloat fov);
+   void handleControls(GLFWwindow* window, GLfloat windowWidth, GLfloat windowHeight, float deltaTime);
+//   void keyboardMove(CameraMovement direction);
+//   void mouseMove(GLfloat xOffset, GLfloat yOffset);
    ~Camera();
-
-   GLfloat getFov() const {
-       return fov;
-   }
-
-   void setFov(GLfloat fov) {
-       this->fov = fov;
-   }
-
-   void setHorizontalAngle(GLfloat horizontalAngle) {
-       this->horizontalAngle = horizontalAngle;
-   }
-
-   void setPosition(const glm::vec3& position) {
-       this->position = position;
-   }
-
-   void setProjectionMatrix(const glm::mat4& projectionMatrix) {
-       ProjectionMatrix = projectionMatrix;
-   }
-
-   void setVerticalAngle(GLfloat verticalAngle) {
-       this->verticalAngle = verticalAngle;
-   }
-
-   void setViewMatrix(const glm::mat4& viewMatrix) {
-       ViewMatrix = viewMatrix;
-   }
 };
 
 #endif /* SRC_CAMERA_H_ */

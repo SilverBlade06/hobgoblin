@@ -7,45 +7,40 @@
 
 #include "LightController.h"
 
+extern bool keys[1024];
+
 LightController::LightController(Light* light) {
    this->light = light;
 }
 
-void LightController::control(GLFWwindow* window) {
+void LightController::control(GLFWwindow* window, float deltaTime) {
    float speed = 3.0f; // 3 units / second
-    // glfwGetTime is called only once, the first time this function is called
-   static double lastTime = glfwGetTime();
-
-   // Compute time difference between current and last frame
-   double currentTime = glfwGetTime();
-   float deltaTime = float(currentTime - lastTime);
 
    // Move forward
-   if (glfwGetKey( window, GLFW_KEY_I ) == GLFW_PRESS) {
+   if (keys[GLFW_KEY_I]) {
        light->setLightPos(light->getLightPos() + glm::vec3(0,0,-1) * deltaTime * speed);
    }
    // Move backward
-   if (glfwGetKey( window, GLFW_KEY_K ) == GLFW_PRESS) {
+   if (keys[GLFW_KEY_K]) {
        light->setLightPos(light->getLightPos() - glm::vec3(0,0,-1) * deltaTime * speed);
    }
    // Strafe right
-   if (glfwGetKey( window, GLFW_KEY_L ) == GLFW_PRESS) {
+   if (keys[GLFW_KEY_L]) {
        light->setLightPos(light->getLightPos() + glm::vec3(1,0,0) * deltaTime * speed);
    }
    // Strafe left
-   if (glfwGetKey( window, GLFW_KEY_J ) == GLFW_PRESS) {
+   if (keys[GLFW_KEY_J]) {
        light->setLightPos(light->getLightPos() - glm::vec3(1,0,0) * deltaTime * speed);
    }
    // Go up
-   if (glfwGetKey( window, GLFW_KEY_O ) == GLFW_PRESS) {
+   if (keys[GLFW_KEY_O]) {
        light->setLightPos(light->getLightPos() + glm::vec3(0,1,0) * deltaTime * speed);
    }
-
-   if (glfwGetKey( window, GLFW_KEY_U ) == GLFW_PRESS) {
+   // Go down
+   if (keys[GLFW_KEY_U]) {
        light->setLightPos(light->getLightPos() - glm::vec3(0,1,0) * deltaTime * speed);
    }
 
-   lastTime = currentTime;
 }
 
 LightController::~LightController() {

@@ -20,6 +20,7 @@
 // Program libraries
 #include "../system/diagnostics.h"
 #include "controls/LightController.h"
+//#include "controls/Controller.h"
 #include "Camera.h"
 #include "graphics/Light.h"
 #include "graphics/Material.h"
@@ -27,6 +28,24 @@
 #include "graphics/textures.h"
 #include "graphics/vertices.h"
 #include "Player.h"
+
+GLint windowWidth = 640;
+GLint windowHeight = 480;
+
+GLfloat deltaTime = 0.0f;
+GLfloat lastFrame = 0.0f;
+
+GLFWwindow* window;
+
+// Create camera
+Camera camera;
+
+bool keys[1024];
+
+// Callback declarations
+void key_callback(GLFWwindow* window, int key, int scancode, int action, int mode);
+void mouse_callback(GLFWwindow* window, double xPos, double yPos);
+void move(LightController *lightController);
 
 int main() {
 
@@ -40,9 +59,7 @@ int main() {
    glfwWindowHint(GLFW_SAMPLES, 4);
 
 // Create window
-   GLint windowWidth = 640;
-   GLint windowHeight = 480;
-   GLFWwindow* window = glfwCreateWindow(windowWidth, windowHeight, "Hobgoblin", NULL, NULL);
+   window = glfwCreateWindow(windowWidth, windowHeight, "Hobgoblin", NULL, NULL);
    if (!window) {
        std::cerr << "ERROR: could not open window with GLFW3" << std::endl;
        glfwTerminate();
@@ -91,25 +108,26 @@ int main() {
            "shaders/vertex_shader_default.glsl",
            "shaders/fragment_shader_yellow.glsl");
 
-   // Create camera
-   Camera* camera = new Camera();
+   // Set the callback functions
+   glfwSetKeyCallback(window, key_callback);
+   glfwSetCursorPosCallback(window, mouse_callback);
 
    // Light source
    glm::vec3 lightPos = glm::vec3(0.2f, 0.6f, 1.25f);
    glm::vec3 ambient  = glm::vec3(1.0f, 1.0f, 1.0f);
    glm::vec3 diffuse  = glm::vec3(1.0f, 1.0f, 0.0f);
    glm::vec3 specular = glm::vec3(1.0f, 1.0f, 1.0f);
-   Light* light = new Light(lightPos, ambient, diffuse, specular);
+   Light light(lightPos, ambient, diffuse, specular);
 
    // Control the light
-   LightController* lightController = new LightController(light);
+   LightController lightController(&light);
 
    // Material
    glm::vec3 materialAmbient  = glm::vec3(0.5f, 0.5f, 0.75f);
    glm::vec3 materialDiffuse  = glm::vec3(1.0f, 1.0f, 0.0f);
    glm::vec3 materialSpecular = glm::vec3(1.0f, 1.0f, 1.0f);
    GLfloat shininess = 128.0;
-   Material* material = new Material(
+   Material material(
            materialAmbient,
            materialDiffuse,
            materialSpecular,
@@ -148,10 +166,26 @@ int main() {
    // Create background color by clearing
    glClearColor(0.2, 0.2, 0.2, 1);
 
+   // Draw the right picture at the start
+   camera.handleControls(window, windowWidth, windowHeight, deltaTime);
+
    //********************************************************************************************//
    //   Drawing loop                                                                             //
    //********************************************************************************************//
    while (!glfwWindowShouldClose (window) && glfwGetKey(window, GLFW_KEY_ESCAPE ) != GLFW_PRESS) {
+
+       // glfwGetTime is called only once, the first time this function is called
+       static float lastTime = glfwGetTime();
+
+       // Compute time difference between current and last frame
+       float currentTime = glfwGetTime();
+       deltaTime = float(currentTime - lastTime);
+
+       // For the next frame, the "last time" will be "now"
+       lastTime = currentTime;
+
+       // update other events like input handling
+       glfwPollEvents();
 
        // Clear the screen
        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -164,19 +198,19 @@ int main() {
 
        // Camera position
        GLint cameraPosID = glGetUniformLocation(shader_program, "cameraPosition");
-       glUniform3f(cameraPosID, camera->getPosition().x, camera->getPosition().y, camera->getPosition().z);
+       glUniform3f(cameraPosID, camera.getPosition().x, camera.getPosition().y, camera.getPosition().z);
 
        // Light position
        GLint lightPosID      = glGetUniformLocation(shader_program, "light.position");
        GLint lightAmbientID  = glGetUniformLocation(shader_program, "light.ambient");
        GLint lightDiffuseID  = glGetUniformLocation(shader_program, "light.diffuse");
        GLint lightSpecularID = glGetUniformLocation(shader_program, "light.specular");
-       glUniform3f(lightPosID, light->getLightPos().x, light->getLightPos().y, light->getLightPos().z);
-       glUniform3f(lightAmbientID, light->getAmbient().r, light->getAmbient().g, light->getAmbient().b);
-       glUniform3f(lightDiffuseID, light->getDiffuse().r, light->getDiffuse().g, light->getDiffuse().b);
-       glUniform3f(lightSpecularID, light->getSpecular().r, light->getSpecular().g, light->getSpecular().b);
+       glUniform3f(lightPosID, light.getLightPos().x, light.getLightPos().y, light.getLightPos().z);
+       glUniform3f(lightAmbientID, light.getAmbient().r, light.getAmbient().g, light.getAmbient().b);
+       glUniform3f(lightDiffuseID, light.getDiffuse().r, light.getDiffuse().g, light.getDiffuse().b);
+       glUniform3f(lightSpecularID, light.getSpecular().r, light.getSpecular().g, light.getSpecular().b);
        // Control light
-       lightController->control(window);
+//       lightController.control(window);
 
        // Material properties
        GLint materialAmbientID  = glGetUniformLocation(shader_program, "material.ambient");
@@ -184,15 +218,16 @@ int main() {
        GLint materialSpecularID = glGetUniformLocation(shader_program, "material.specular");
        GLint materialShineID    = glGetUniformLocation(shader_program, "material.shininess");
 
-       glUniform3f(materialAmbientID,  material->getAmbient().r, material->getAmbient().g, material->getAmbient().b);
-       glUniform3f(materialDiffuseID,  material->getDiffuse().r, material->getDiffuse().g, material->getDiffuse().b);
-       glUniform3f(materialSpecularID, material->getSpecular().r, material->getSpecular().g, material->getSpecular().b);
-       glUniform1f(materialShineID,    material->getShininess());
+       glUniform3f(materialAmbientID,  material.getAmbient().r, material.getAmbient().g, material.getAmbient().b);
+       glUniform3f(materialDiffuseID,  material.getDiffuse().r, material.getDiffuse().g, material.getDiffuse().b);
+       glUniform3f(materialSpecularID, material.getSpecular().r, material.getSpecular().g, material.getSpecular().b);
+       glUniform1f(materialShineID,    material.getShininess());
 
        // Control and camera management
-       camera->handleControls(window, windowWidth, windowHeight);
-       glm::mat4 ProjectionMatrix = camera->getProjectionMatrix();
-       glm::mat4 ViewMatrix = camera->getViewMatrix();
+       move(&lightController);
+
+       glm::mat4 ProjectionMatrix = camera.getProjectionMatrix();
+       glm::mat4 ViewMatrix = camera.getViewMatrix();
        glm::mat4 ModelMatrix = glm::mat4(1.0);
        glm::mat4 MVP = ProjectionMatrix * ViewMatrix * ModelMatrix;
 
@@ -222,11 +257,38 @@ int main() {
        glBindTexture(GL_TEXTURE_2D, 0);
        glBindVertexArray(0);
 
-       // update other events like input handling
-       glfwPollEvents();
        // put the stuff we've been drawing onto the display
        glfwSwapBuffers(window);
    }
 
    return 0;
+}
+
+// Callback methods
+
+void move(LightController *lightController){
+   // Camera controls
+   if(keys[GLFW_KEY_W] || keys[GLFW_KEY_S] || keys[GLFW_KEY_A] || keys[GLFW_KEY_D] || keys[GLFW_KEY_SPACE])
+       camera.handleControls(window, windowWidth, windowHeight, deltaTime);
+   if(keys[GLFW_KEY_I] || keys[GLFW_KEY_K] || keys[GLFW_KEY_J] || keys[GLFW_KEY_L] || keys[GLFW_KEY_O] || keys[GLFW_KEY_U])
+       lightController->control(window, deltaTime);
+}
+
+void key_callback(GLFWwindow* window, int key, int scancode, int action, int mode){
+    if(key == GLFW_KEY_ESCAPE && action == GLFW_PRESS)
+        glfwSetWindowShouldClose(window, GL_TRUE);
+    if (key >= 0 && key < 1024){
+        if(action == GLFW_PRESS) {
+            keys[key] = true;
+            std::cout << key << " has been pressed." << std::endl;
+        }
+        else if(action == GLFW_RELEASE){
+            keys[key] = false;
+            std::cout << key << " has been released." << std::endl;
+        }
+    }
+}
+
+void mouse_callback(GLFWwindow* window, double xPos, double yPos){
+    camera.handleControls(window, windowWidth, windowHeight, deltaTime);
 }

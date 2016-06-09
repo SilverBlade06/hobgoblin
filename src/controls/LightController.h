@@ -23,7 +23,7 @@ private:
     Light* light;
 public:
     LightController(Light* light);
-    void control(GLFWwindow* window);
+    void control(GLFWwindow* window, float deltaTime);
     virtual ~LightController();
 };
 
