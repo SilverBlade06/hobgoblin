@@ -20,7 +20,6 @@
 // Program libraries
 #include "../system/diagnostics.h"
 #include "controls/LightController.h"
-//#include "controls/Controller.h"
 #include "Camera.h"
 #include "graphics/Light.h"
 #include "graphics/Material.h"
@@ -33,7 +32,7 @@ GLint windowWidth = 640;
 GLint windowHeight = 480;
 
 GLfloat deltaTime = 0.0f;
-GLfloat lastFrame = 0.0f;
+float currentTime;
 
 GLFWwindow* window;
 
@@ -173,12 +172,12 @@ int main() {
    //********************************************************************************************//
    //   Drawing loop                                                                             //
    //********************************************************************************************//
-   while (!glfwWindowShouldClose (window) && glfwGetKey(window, GLFW_KEY_ESCAPE ) != GLFW_PRESS) {
+   while (!glfwWindowShouldClose (window)) {
        // glfwGetTime is called only once, the first time this function is called
        static float lastTime = glfwGetTime();
 
        // Compute time difference between current and last frame
-       float currentTime = glfwGetTime();
+       currentTime = glfwGetTime();
        deltaTime = float(currentTime - lastTime);
 
        // For the next frame, the "last time" will be "now"
@@ -262,6 +261,15 @@ int main() {
        // put the stuff we've been drawing onto the display
        glfwSwapBuffers(window);
    }
+   //Properly de-allocate all resources
+   glDeleteVertexArrays(1, &vao);
+   glDeleteBuffers(1, &vbo);
+   glDeleteVertexArrays(1, &vao2);
+   glDeleteBuffers(1, &vbo2);
+   glDeleteVertexArrays(1, &vao3);
+   glDeleteBuffers(1, &vbo3);
+   // Terminate GLFW, clearing any resources allocated by GLFW.
+   glfwTerminate();
 
    return 0;
 }

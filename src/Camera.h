@@ -12,16 +12,6 @@
 #ifndef SRC_CAMERA_H_
 #define SRC_CAMERA_H_
 
-//static bool keys[1024];
-
-enum CameraMovement {
-    FORWARD,
-    BACKWARD,
-    LEFT,
-    RIGHT,
-    UP
-};
-
 class Camera {
 private:
    glm::mat4 ViewMatrix;
