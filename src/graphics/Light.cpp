@@ -1,32 +1,22 @@
 /*
- * light.cpp
+ * Light.cpp
  *
- *  Created on: 2016. jún. 5.
+ *  Created on: 2016. jún. 11.
  *      Author: SilverBlade
  */
 
 #include "Light.h"
 
 Light::Light() {
-    this->lightPos = glm::vec3(0.0, 0.0, 0.0);
     this->ambient = glm::vec3(1.0, 1.0, 1.0);
     this->diffuse = glm::vec3(1.0, 1.0, 1.0);
     this->specular = glm::vec3(1.0, 1.0, 1.0);
 }
 
-Light::Light(glm::vec3 lightPos, glm::vec3 ambient, glm::vec3 diffuse, glm::vec3 specular) {
-    this->lightPos = lightPos;
+Light::Light(glm::vec3 ambient, glm::vec3 diffuse, glm::vec3 specular) {
     this->ambient = ambient;
     this->diffuse = diffuse;
     this->specular = specular;
-}
-
-void Light::setLightPos(glm::vec3 lightPos) {
-    this->lightPos = lightPos;
-}
-
-glm::vec3 Light::getLightPos() {
-    return this->lightPos;
 }
 
 void Light::setAmbient(glm::vec3 ambient) {
@@ -52,7 +42,8 @@ void Light::setSpecular(glm::vec3 specular) {
 glm::vec3 Light::getSpecular() {
     return this->specular;
 }
-Light::~Light() {
 
+Light::~Light() {
+    // TODO Auto-generated destructor stub
 }
 

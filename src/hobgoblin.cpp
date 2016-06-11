@@ -21,8 +21,8 @@
 #include "../system/diagnostics.h"
 #include "controls/LightController.h"
 #include "Camera.h"
-#include "graphics/Light.h"
 #include "graphics/Material.h"
+#include "graphics/PointLight.h"
 #include "graphics/shaders.h"
 #include "graphics/textures.h"
 #include "graphics/vertices.h"
@@ -116,7 +116,7 @@ int main() {
    glm::vec3 ambient  = glm::vec3(0.5f, 0.5f, 0.5f);
    glm::vec3 diffuse  = glm::vec3(0.5f, 0.5f, 0.0f);
    glm::vec3 specular = glm::vec3(1.0f, 1.0f, 1.0f);
-   Light light(lightPos, ambient, diffuse, specular);
+   PointLight light(lightPos, ambient, diffuse, specular);
 
    // Control the light
    LightController lightController(&light);

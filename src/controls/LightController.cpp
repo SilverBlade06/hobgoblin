@@ -9,7 +9,7 @@
 
 extern bool keys[1024];
 
-LightController::LightController(Light* light) {
+LightController::LightController(PointLight* light) {
    this->light = light;
 }
 

@@ -1,7 +1,7 @@
 /*
- * light.h
+ * Light.h
  *
- *  Created on: 2016. jún. 5.
+ *  Created on: 2016. jún. 11.
  *      Author: SilverBlade
  */
 
@@ -17,16 +17,13 @@
 #include <glm/glm.hpp>
 
 class Light {
-private:
-    glm::vec3 lightPos;
+protected:
     glm::vec3 ambient;
     glm::vec3 diffuse;
     glm::vec3 specular;
 public:
     Light();
-    Light(glm::vec3 lightPos, glm::vec3 ambient, glm::vec3 diffuse, glm::vec3 specular);
-    void setLightPos(glm::vec3 lightPos);
-    glm::vec3 getLightPos();
+    Light(glm::vec3 ambient, glm::vec3 diffuse, glm::vec3 specular);
     void setAmbient(glm::vec3 ambient);
     glm::vec3 getAmbient();
     void setDiffuse(glm::vec3 diffuse);

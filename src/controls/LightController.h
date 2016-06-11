@@ -16,13 +16,13 @@
 // Include GLM
 #include <glm/glm.hpp>
 
-#include "../graphics/Light.h"
+#include "../graphics/PointLight.h"
 
 class LightController {
 private:
-    Light* light;
+    PointLight* light;
 public:
-    LightController(Light* light);
+    LightController(PointLight* light);
     void control(GLFWwindow* window, float deltaTime);
     virtual ~LightController();
 };
