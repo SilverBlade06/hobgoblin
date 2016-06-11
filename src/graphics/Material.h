@@ -18,21 +18,17 @@
 
 class Material {
 private:
-    glm::vec3 ambient;
-    glm::vec3 diffuse;
-    glm::vec3 specular;
+    GLint diffuse;
+    GLint specular;
     GLfloat shininess;
 public:
-    Material();
-    Material(glm::vec3 ambient, glm::vec3 diffuse, glm::vec3 specular, GLfloat shininess);
-    const glm::vec3& getAmbient() const;
-    void setAmbient(const glm::vec3& ambient);
-    const glm::vec3& getDiffuse() const;
-    void setDiffuse(const glm::vec3& diffuse);
+    Material(GLint diffuse, GLint specular, GLfloat shininess);
+    GLint getDiffuse() const;
+    void setDiffuse(GLint diffuse);
+    GLint getSpecular() const;
+    void setSpecular(GLint specular);
     float getShininess() const;
     void setShininess(float shininess);
-    const glm::vec3& getSpecular() const;
-    void setSpecular(const glm::vec3& specular);
     virtual ~Material();
 };
 

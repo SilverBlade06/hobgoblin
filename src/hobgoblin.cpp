@@ -113,24 +113,13 @@ int main() {
 
    // Light source
    glm::vec3 lightPos = glm::vec3(0.2f, 0.6f, 1.25f);
-   glm::vec3 ambient  = glm::vec3(1.0f, 1.0f, 1.0f);
-   glm::vec3 diffuse  = glm::vec3(1.0f, 1.0f, 0.0f);
+   glm::vec3 ambient  = glm::vec3(0.5f, 0.5f, 0.5f);
+   glm::vec3 diffuse  = glm::vec3(0.5f, 0.5f, 0.0f);
    glm::vec3 specular = glm::vec3(1.0f, 1.0f, 1.0f);
    Light light(lightPos, ambient, diffuse, specular);
 
    // Control the light
    LightController lightController(&light);
-
-   // Material
-   glm::vec3 materialAmbient  = glm::vec3(0.5f, 0.5f, 0.75f);
-   glm::vec3 materialDiffuse  = glm::vec3(1.0f, 1.0f, 0.0f);
-   glm::vec3 materialSpecular = glm::vec3(1.0f, 1.0f, 1.0f);
-   GLfloat shininess = 128.0;
-   Material material(
-           materialAmbient,
-           materialDiffuse,
-           materialSpecular,
-           shininess);
 
    // Get a handle for our "MVP" uniform, MVPID = Model/View/Projection Matrix ID
    GLuint MVPID = glGetUniformLocation(shader_program, "MVP");
@@ -140,7 +129,12 @@ int main() {
    // Load textures
    GLuint texture  = loadTexture("textures/wall.jpg");
    GLuint texture2 = loadTexture("textures/roof2.jpg");
-   GLuint texture3 = loadTexture("textures/wooden_box.jpg");
+   GLuint texture3 = loadTexture("textures/container2.png");
+   GLuint texture4 = loadTexture("textures/container2_specular.png");
+
+   // Material
+   GLfloat shininess = 128.0;
+   Material material(texture3, texture4, shininess);
 
    // Calculate normal vectors
    calculateNormals(points, 2);
@@ -208,19 +202,15 @@ int main() {
        glUniform3f(lightAmbientID, light.getAmbient().r, light.getAmbient().g, light.getAmbient().b);
        glUniform3f(lightDiffuseID, light.getDiffuse().r, light.getDiffuse().g, light.getDiffuse().b);
        glUniform3f(lightSpecularID, light.getSpecular().r, light.getSpecular().g, light.getSpecular().b);
-       // Control light
-//       lightController.control(window);
 
        // Material properties
-       GLint materialAmbientID  = glGetUniformLocation(shader_program, "material.ambient");
        GLint materialDiffuseID  = glGetUniformLocation(shader_program, "material.diffuse");
        GLint materialSpecularID = glGetUniformLocation(shader_program, "material.specular");
        GLint materialShineID    = glGetUniformLocation(shader_program, "material.shininess");
 
-       glUniform3f(materialAmbientID,  material.getAmbient().r, material.getAmbient().g, material.getAmbient().b);
-       glUniform3f(materialDiffuseID,  material.getDiffuse().r, material.getDiffuse().g, material.getDiffuse().b);
-       glUniform3f(materialSpecularID, material.getSpecular().r, material.getSpecular().g, material.getSpecular().b);
-       glUniform1f(materialShineID,    material.getShininess());
+       glUniform1i(materialDiffuseID, 0);
+       glUniform1i(materialSpecularID, 1);
+       glUniform1f(materialShineID, material.getShininess());
 
        // Control and camera management
        move(&lightController);
@@ -237,19 +227,27 @@ int main() {
        glUniformMatrix4fv(ModelTransformedID, 1, GL_FALSE, glm::value_ptr(ModelMatrixTransformed));
 
        // Bind the texture
+       glActiveTexture(GL_TEXTURE0);
        glBindTexture(GL_TEXTURE_2D, texture);
-
+       glActiveTexture(GL_TEXTURE1);
+       glBindTexture(GL_TEXTURE_2D, texture);
        glBindVertexArray(vao);
        glDrawArrays(GL_TRIANGLES, 0, 2*3); // draw 2 triangles
 
        // Bind the texture
+       glActiveTexture(GL_TEXTURE0);
+       glBindTexture(GL_TEXTURE_2D, texture2);
+       glActiveTexture(GL_TEXTURE1);
        glBindTexture(GL_TEXTURE_2D, texture2);
        // Use 2nd shader program with the 2nd VAO
        glBindVertexArray(vao2);
        glDrawArrays(GL_TRIANGLES, 0, 4*3); // draw 4 triangles
 
        // Bind the texture
+       glActiveTexture(GL_TEXTURE0);
        glBindTexture(GL_TEXTURE_2D, texture3);
+       glActiveTexture(GL_TEXTURE1);
+       glBindTexture(GL_TEXTURE_2D, texture4);
        // Use 2nd shader program with the 3nd VAO
        glBindVertexArray(vao3);
        glDrawArrays(GL_TRIANGLES, 0, 12*3); // draw 12 triangles

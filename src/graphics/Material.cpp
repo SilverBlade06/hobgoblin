@@ -7,34 +7,26 @@
 
 #include "Material.h"
 
-Material::Material() {
-    this->ambient   = glm::vec3(1.0, 1.0, 1.0);
-    this->diffuse   = glm::vec3(1.0, 1.0, 1.0);
-    this->specular  = glm::vec3(1.0, 1.0, 1.0);
-    this->shininess = 32.0;
-}
-
-Material::Material(glm::vec3 ambient, glm::vec3 diffuse, glm::vec3 specular, GLfloat shininess) {
-    this->ambient   = ambient;
+Material::Material(GLint diffuse, GLint specular, GLfloat shininess) {
     this->diffuse   = diffuse;
     this->specular  = specular;
     this->shininess = shininess;
 }
 
-const glm::vec3& Material::getAmbient() const {
-    return ambient;
-}
-
-void Material::setAmbient(const glm::vec3& ambient) {
-    this->ambient = ambient;
-}
-
-const glm::vec3& Material::getDiffuse() const {
+GLint Material::getDiffuse() const {
     return diffuse;
 }
 
-void Material::setDiffuse(const glm::vec3& diffuse) {
+void Material::setDiffuse(GLint diffuse) {
     this->diffuse = diffuse;
+}
+
+GLint Material::getSpecular() const {
+    return specular;
+}
+
+void Material::setSpecular(GLint specular) {
+    this->specular = specular;
 }
 
 float Material::getShininess() const {
@@ -43,14 +35,6 @@ float Material::getShininess() const {
 
 void Material::setShininess(float shininess) {
     this->shininess = shininess;
-}
-
-const glm::vec3& Material::getSpecular() const {
-    return specular;
-}
-
-void Material::setSpecular(const glm::vec3& specular) {
-    this->specular = specular;
 }
 
 Material::~Material() {
