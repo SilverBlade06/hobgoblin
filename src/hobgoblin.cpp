@@ -22,6 +22,7 @@
 #include "controls/LightController.h"
 #include "Camera.h"
 #include "graphics/Material.h"
+#include "graphics/DirectionLight.h"
 #include "graphics/PointLight.h"
 #include "graphics/shaders.h"
 #include "graphics/textures.h"
@@ -112,11 +113,18 @@ int main() {
    glfwSetCursorPosCallback(window, mouse_callback);
 
    // Light source
-   glm::vec3 lightPos = glm::vec3(0.2f, 0.6f, 1.25f);
-   glm::vec3 ambient  = glm::vec3(0.5f, 0.5f, 0.5f);
-   glm::vec3 diffuse  = glm::vec3(0.5f, 0.5f, 0.0f);
-   glm::vec3 specular = glm::vec3(1.0f, 1.0f, 1.0f);
-   PointLight light(lightPos, ambient, diffuse, specular);
+   PointLight light(
+           glm::vec3(0.2f, 0.6f, 1.25f),
+           glm::vec3(0.5f, 0.5f, 0.5f),
+           glm::vec3(0.5f, 0.5f, 0.0f),
+           glm::vec3(1.0f, 1.0f, 1.0f));
+
+   // Directional light
+   DirectionLight dirLight(
+           glm::vec3(-0.3f, -0.5f,-2.0f),
+           glm::vec3(0.5f, 0.0f, 0.0f),
+           glm::vec3(0.5f, 0.0f, 0.0f),
+           glm::vec3(1.0f, 1.0f, 1.0f));
 
    // Control the light
    LightController lightController(&light);
@@ -193,15 +201,25 @@ int main() {
        GLint cameraPosID = glGetUniformLocation(shader_program, "cameraPosition");
        glUniform3f(cameraPosID, camera.getPosition().x, camera.getPosition().y, camera.getPosition().z);
 
-       // Light position
-       GLint lightPosID      = glGetUniformLocation(shader_program, "light.position");
-       GLint lightAmbientID  = glGetUniformLocation(shader_program, "light.ambient");
-       GLint lightDiffuseID  = glGetUniformLocation(shader_program, "light.diffuse");
-       GLint lightSpecularID = glGetUniformLocation(shader_program, "light.specular");
+       // Point Light
+       GLint lightPosID      = glGetUniformLocation(shader_program, "pointLight.position");
+       GLint lightAmbientID  = glGetUniformLocation(shader_program, "pointLight.ambient");
+       GLint lightDiffuseID  = glGetUniformLocation(shader_program, "pointLight.diffuse");
+       GLint lightSpecularID = glGetUniformLocation(shader_program, "pointLight.specular");
        glUniform3f(lightPosID, light.getLightPos().x, light.getLightPos().y, light.getLightPos().z);
        glUniform3f(lightAmbientID, light.getAmbient().r, light.getAmbient().g, light.getAmbient().b);
        glUniform3f(lightDiffuseID, light.getDiffuse().r, light.getDiffuse().g, light.getDiffuse().b);
        glUniform3f(lightSpecularID, light.getSpecular().r, light.getSpecular().g, light.getSpecular().b);
+
+       // Directional Light
+       GLint dirLightDirID = glGetUniformLocation(shader_program, "dirLight.direction");
+       GLint dirLightAmbientID  = glGetUniformLocation(shader_program, "dirLight.ambient");
+       GLint dirLightDiffuseID  = glGetUniformLocation(shader_program, "dirLight.diffuse");
+       GLint dirLightSpecularID = glGetUniformLocation(shader_program, "dirLight.specular");
+       glUniform3f(dirLightDirID, -0.2f, 0.75f, -1.5f);
+       glUniform3f(dirLightAmbientID, dirLight.getAmbient().r, dirLight.getAmbient().g, dirLight.getAmbient().b);
+       glUniform3f(dirLightDiffuseID, dirLight.getDiffuse().r, dirLight.getDiffuse().g, dirLight.getDiffuse().b);
+       glUniform3f(dirLightSpecularID, dirLight.getSpecular().r, dirLight.getSpecular().g, dirLight.getSpecular().b);
 
        // Material properties
        GLint materialDiffuseID  = glGetUniformLocation(shader_program, "material.diffuse");

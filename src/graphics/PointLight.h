@@ -8,14 +8,6 @@
 #ifndef SRC_GRAPHICS_POINTLIGHT_H_
 #define SRC_GRAPHICS_POINTLIGHT_H_
 
-// OpenGL/Graphic libraries
-// Include GLEW (ALWAYS INCLUDE **BEFORE** GLFW)
-#include <GL/glew.h>
-// Include GLFW
-#include <GLFW/glfw3.h>
-// Include GLM
-#include <glm/glm.hpp>
-
 #include "Light.h"
 
 class PointLight : public Light {
