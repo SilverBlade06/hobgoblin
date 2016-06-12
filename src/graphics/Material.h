@@ -27,8 +27,8 @@ public:
     void setDiffuse(GLint diffuse);
     GLint getSpecular() const;
     void setSpecular(GLint specular);
-    float getShininess() const;
-    void setShininess(float shininess);
+    GLfloat getShininess() const;
+    void setShininess(GLfloat shininess);
     virtual ~Material();
 };
 

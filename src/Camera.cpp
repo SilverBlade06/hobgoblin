@@ -70,6 +70,15 @@ Camera::Camera(glm::vec3 position, GLfloat horizontalAngle, GLfloat verticalAngl
    this->fov = fov;
 }
 
+glm::vec3 Camera::getDirection() {
+   // Direction : Spherical coordinates to Cartesian coordinates conversion
+   glm::vec3 direction(
+       cos(verticalAngle) * sin(horizontalAngle),
+       sin(verticalAngle),
+       cos(verticalAngle) * cos(horizontalAngle));
+   return direction;
+}
+
 void Camera::handleControls(GLFWwindow* window, GLfloat windowWidth, GLfloat windowHeight, float deltaTime) {
 
    // Get mouse position
@@ -84,11 +93,7 @@ void Camera::handleControls(GLFWwindow* window, GLfloat windowWidth, GLfloat win
    verticalAngle   = verticalAngle   + mouseSpeed * GLfloat(windowHeight/2 - ypos);
 
    // Direction : Spherical coordinates to Cartesian coordinates conversion
-   glm::vec3 direction(
-        cos(verticalAngle) * sin(horizontalAngle),
-        sin(verticalAngle),
-        cos(verticalAngle) * cos(horizontalAngle)
-   );
+   glm::vec3 direction = getDirection();
 
    // Right vector
    glm::vec3 rightVec = glm::vec3(

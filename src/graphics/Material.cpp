@@ -29,11 +29,11 @@ void Material::setSpecular(GLint specular) {
     this->specular = specular;
 }
 
-float Material::getShininess() const {
+GLfloat Material::getShininess() const {
     return shininess;
 }
 
-void Material::setShininess(float shininess) {
+void Material::setShininess(GLfloat shininess) {
     this->shininess = shininess;
 }
 

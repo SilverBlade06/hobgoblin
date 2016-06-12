@@ -24,6 +24,7 @@
 #include "graphics/Material.h"
 #include "graphics/DirectionLight.h"
 #include "graphics/PointLight.h"
+#include "graphics/SpotLight.h"
 #include "graphics/shaders.h"
 #include "graphics/textures.h"
 #include "graphics/vertices.h"
@@ -115,18 +116,27 @@ int main() {
    // Light source
    PointLight light(
            glm::vec3(0.2f, 0.6f, 1.25f),
-           glm::vec3(0.5f, 0.5f, 0.5f),
-           glm::vec3(0.5f, 0.5f, 0.0f),
-           glm::vec3(1.0f, 1.0f, 1.0f));
+           glm::vec3(0.1f, 0.1f, 0.1f),
+           glm::vec3(0.1f, 0.1f, 0.0f),
+           glm::vec3(0.5f, 0.5f, 0.5f));
 
    // Directional light
    DirectionLight dirLight(
-           glm::vec3(-0.3f, -0.5f,-2.0f),
-           glm::vec3(0.5f, 0.0f, 0.0f),
-           glm::vec3(0.5f, 0.0f, 0.0f),
-           glm::vec3(1.0f, 1.0f, 1.0f));
+           glm::vec3(-0.5f, -0.2f,-0.0f),
+           glm::vec3(0.1f, 0.1f, 0.1f),
+           glm::vec3(0.1f, 0.1f, 0.0f),
+           glm::vec3(0.6f, 0.6f, 0.6f));
 
-   // Control the light
+   // Spotlight
+   SpotLight spotLight(
+              camera.getPosition(),
+              camera.getDirection(),
+              glm::vec3(0.2f, 0.2f, 0.2f),
+              glm::vec3(0.5f, 0.5f, 0.5f),
+              glm::vec3(1.0f, 1.0f, 1.0f),
+              12.5f);
+
+   // Control the point light
    LightController lightController(&light);
 
    // Get a handle for our "MVP" uniform, MVPID = Model/View/Projection Matrix ID
@@ -206,10 +216,19 @@ int main() {
        GLint lightAmbientID  = glGetUniformLocation(shader_program, "pointLight.ambient");
        GLint lightDiffuseID  = glGetUniformLocation(shader_program, "pointLight.diffuse");
        GLint lightSpecularID = glGetUniformLocation(shader_program, "pointLight.specular");
+
+       GLint lightAttConstID = glGetUniformLocation(shader_program, "pointLight.constant");
+       GLint lightAttLinearID = glGetUniformLocation(shader_program, "pointLight.linear");
+       GLint lightAttQuadID = glGetUniformLocation(shader_program, "pointLight.quadratic");
+
        glUniform3f(lightPosID, light.getLightPos().x, light.getLightPos().y, light.getLightPos().z);
        glUniform3f(lightAmbientID, light.getAmbient().r, light.getAmbient().g, light.getAmbient().b);
        glUniform3f(lightDiffuseID, light.getDiffuse().r, light.getDiffuse().g, light.getDiffuse().b);
        glUniform3f(lightSpecularID, light.getSpecular().r, light.getSpecular().g, light.getSpecular().b);
+
+       glUniform1f(lightAttConstID, light.getConstant());
+       glUniform1f(lightAttLinearID, light.getLinear());
+       glUniform1f(lightAttQuadID, light.getQuadratic());
 
        // Directional Light
        GLint dirLightDirID = glGetUniformLocation(shader_program, "dirLight.direction");
@@ -220,6 +239,19 @@ int main() {
        glUniform3f(dirLightAmbientID, dirLight.getAmbient().r, dirLight.getAmbient().g, dirLight.getAmbient().b);
        glUniform3f(dirLightDiffuseID, dirLight.getDiffuse().r, dirLight.getDiffuse().g, dirLight.getDiffuse().b);
        glUniform3f(dirLightSpecularID, dirLight.getSpecular().r, dirLight.getSpecular().g, dirLight.getSpecular().b);
+
+       GLint spotLightPosID = glGetUniformLocation(shader_program, "spotLight.position");
+       GLint spotLightDirID = glGetUniformLocation(shader_program, "spotLight.direction");
+       GLint spotLightAmbientID  = glGetUniformLocation(shader_program, "spotLight.ambient");
+       GLint spotLightDiffuseID  = glGetUniformLocation(shader_program, "spotLight.diffuse");
+       GLint spotLightSpecularID = glGetUniformLocation(shader_program, "spotLight.specular");
+       GLint spotLightCutOffID = glGetUniformLocation(shader_program, "spotLight.cutOff");
+       glUniform3f(spotLightPosID, camera.getPosition().x, camera.getPosition().y, camera.getPosition().z);
+       glUniform3f(spotLightDirID, camera.getDirection().x, camera.getDirection().y, camera.getDirection().z);
+       glUniform3f(spotLightAmbientID, spotLight.getAmbient().r, spotLight.getAmbient().g, spotLight.getAmbient().b);
+       glUniform3f(spotLightDiffuseID, spotLight.getDiffuse().r, spotLight.getDiffuse().g, spotLight.getDiffuse().b);
+       glUniform3f(spotLightSpecularID, spotLight.getSpecular().r, spotLight.getSpecular().g, spotLight.getSpecular().b);
+       glUniform1f(spotLightCutOffID, spotLight.getCutoff());
 
        // Material properties
        GLint materialDiffuseID  = glGetUniformLocation(shader_program, "material.diffuse");
