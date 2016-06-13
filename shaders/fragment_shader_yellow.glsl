@@ -53,12 +53,18 @@ uniform Light pointLight;
 uniform DirectionalLight dirLight;
 uniform SpotLight spotLight;
 
+vec3 norm = normalize(Normal);
+vec3 viewDir = normalize(cameraPosition - FragPos);
+
+vec3 calculateDirectionLight(DirectionalLight dirLight);
+vec3 calculatePointLight(Light pointLight);
+vec3 calculateSpotLight(SpotLight spotLight);
+
 void main () {
-	vec3 norm = normalize(Normal);
-	vec3 viewDir = normalize(cameraPosition - FragPos);
+    color = vec4(calculateDirectionLight(dirLight) + calculatePointLight(pointLight) + calculateSpotLight(spotLight), 1.0);
+}
 
-// Directional Light calculations
-
+vec3 calculateDirectionLight(DirectionalLight dirLight) {
 	vec3 dirLightDir = normalize(-dirLight.direction);
 
 	// Ambient
@@ -73,7 +79,10 @@ void main () {
 	float dirSpec = pow(max(dot(viewDir, dirReflectDir), 0.0), material.shininess);
 	vec3 dirSpecular = dirLight.specular * dirSpec * vec3(texture(material.specular, TexCoord));
 
-// Point Light calculations
+	return vec3(dirAmbient + dirDiffuse + dirSpecular);
+}
+
+vec3 calculatePointLight(Light pointLight) {
 	float distance = length(pointLight.position - FragPos);
 	float attenuation = 1.0f / 
 	(pointLight.constant + pointLight.linear * distance + pointLight.quadratic * (distance * distance));
@@ -92,7 +101,10 @@ void main () {
 	float spec = pow(max(dot(viewDir, reflectDir), 0.0), material.shininess);
 	vec3 specular = pointLight.specular * spec * vec3(texture(material.specular, TexCoord)) * attenuation;
 
-// Spotlight calculations
+	return vec3(ambient + diffuse + specular);
+}
+
+vec3 calculateSpotLight(SpotLight spotLight) {
 	float spotDistance = length(spotLight.position - FragPos);
 	float spotAttenuation = 1.0f / 
 	(spotLight.constant + spotLight.linear * spotDistance + spotLight.quadratic * (spotDistance * spotDistance));
@@ -114,10 +126,5 @@ void main () {
 	float spotSpec = pow(max(dot(viewDir, spotReflectDir), 0.0), material.shininess);
 	vec3 spotSpecular = spotLight.specular * spotSpec * vec3(texture(material.specular, TexCoord)) * spotAttenuation * intensity;
 
-	// Summarize
-	vec3 sumAmbient = dirAmbient + ambient + spotAmbient;
-	vec3 sumDiffuse = dirDiffuse + diffuse + spotDiffuse;
-	vec3 sumSpecular = dirSpecular + specular + spotSpecular;
-
-	color = vec4(sumAmbient + sumDiffuse + sumSpecular, 1.0);
+	return vec3(spotAmbient + spotDiffuse + spotSpecular);
 }
