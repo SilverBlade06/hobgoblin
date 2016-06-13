@@ -58,7 +58,7 @@ int main() {
 
    // Anti-aliasing
    glfwWindowHint(GLFW_SAMPLES, 4);
-//   float k = glm::cos(glm::radians(1));
+
 // Create window
    window = glfwCreateWindow(windowWidth, windowHeight, "Hobgoblin", NULL, NULL);
    if (!window) {
@@ -248,6 +248,11 @@ int main() {
        GLint spotLightSpecularID = glGetUniformLocation(shader_program, "spotLight.specular");
        GLint spotLightCutOffID = glGetUniformLocation(shader_program, "spotLight.cutOff");
        GLint spotLightOuterCutOffID = glGetUniformLocation(shader_program, "spotLight.outerCutOff");
+
+       GLint spotLightAttConstID = glGetUniformLocation(shader_program, "spotLight.constant");
+       GLint spotLightAttLinearID = glGetUniformLocation(shader_program, "spotLight.linear");
+       GLint spotLightAttQuadID = glGetUniformLocation(shader_program, "spotLight.quadratic");
+
        glUniform3f(spotLightPosID, camera.getPosition().x, camera.getPosition().y, camera.getPosition().z);
        glUniform3f(spotLightDirID, camera.getDirection().x, camera.getDirection().y, camera.getDirection().z);
        glUniform3f(spotLightAmbientID, spotLight.getAmbient().r, spotLight.getAmbient().g, spotLight.getAmbient().b);
@@ -255,6 +260,10 @@ int main() {
        glUniform3f(spotLightSpecularID, spotLight.getSpecular().r, spotLight.getSpecular().g, spotLight.getSpecular().b);
        glUniform1f(spotLightCutOffID, spotLight.getCutOff());
        glUniform1f(spotLightOuterCutOffID, spotLight.getOuterCutoff());
+
+       glUniform1f(spotLightAttConstID, spotLight.getConstant());
+       glUniform1f(spotLightAttLinearID, spotLight.getLinear());
+       glUniform1f(spotLightAttQuadID, spotLight.getQuadratic());
 
        // Material properties
        GLint materialDiffuseID  = glGetUniformLocation(shader_program, "material.diffuse");
