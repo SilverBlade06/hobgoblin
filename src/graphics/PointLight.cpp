@@ -15,6 +15,7 @@ PointLight::PointLight() {
     this->constant = 1.0;
     this->linear = 0.09;
     this->quadratic = 0.032;
+    this->enabled = true;
 }
 
 PointLight::PointLight(glm::vec3 lightPos, glm::vec3 ambient, glm::vec3 diffuse, glm::vec3 specular) {
@@ -25,6 +26,7 @@ PointLight::PointLight(glm::vec3 lightPos, glm::vec3 ambient, glm::vec3 diffuse,
     this->constant = 1.0;
     this->linear = 0.09;
     this->quadratic = 0.032;
+    this->enabled = true;
 }
 
 PointLight::PointLight(glm::vec3 lightPos, glm::vec3 ambient, glm::vec3 diffuse, glm::vec3 specular,
@@ -36,6 +38,7 @@ PointLight::PointLight(glm::vec3 lightPos, glm::vec3 ambient, glm::vec3 diffuse,
     this->constant = constant;
     this->linear = linear;
     this->quadratic = quadratic;
+    this->enabled = true;
 }
 
 void PointLight::setLightPos(glm::vec3 lightPos) {

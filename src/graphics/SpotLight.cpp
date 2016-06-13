@@ -18,6 +18,7 @@ SpotLight::SpotLight() {
     this->constant = 1.0;
     this->linear = 0.09;
     this->quadratic = 0.032;
+    this->enabled = true;
 }
 
 SpotLight::SpotLight(glm::vec3 lightPos, glm::vec3 lightDir, glm::vec3 ambient,
@@ -32,6 +33,7 @@ SpotLight::SpotLight(glm::vec3 lightPos, glm::vec3 lightDir, glm::vec3 ambient,
     this->constant = 1.0;
     this->linear = 0.09;
     this->quadratic = 0.032;
+    this->enabled = true;
 }
 
 SpotLight::SpotLight(glm::vec3 lightPos, glm::vec3 lightDir, glm::vec3 ambient,
@@ -47,6 +49,7 @@ SpotLight::SpotLight(glm::vec3 lightPos, glm::vec3 lightDir, glm::vec3 ambient,
     this->constant = constant;
     this->linear = linear;
     this->quadratic = quadratic;
+    this->enabled = true;
 }
 
 GLfloat SpotLight::getCutOff() const {

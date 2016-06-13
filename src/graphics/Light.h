@@ -21,6 +21,7 @@ protected:
     glm::vec3 ambient;
     glm::vec3 diffuse;
     glm::vec3 specular;
+    bool enabled;
 public:
     Light();
     Light(glm::vec3 ambient, glm::vec3 diffuse, glm::vec3 specular);
@@ -30,6 +31,8 @@ public:
     glm::vec3 getDiffuse();
     void setSpecular(glm::vec3 specular);
     glm::vec3 getSpecular();
+    bool isEnabled() const;
+    void setEnabled(bool enabled = true);
     virtual ~Light();
 };
 

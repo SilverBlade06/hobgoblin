@@ -42,11 +42,13 @@ GLFWwindow* window;
 Camera camera;
 
 bool keys[1024];
+bool keyStateF = false;
 
 // Callback declarations
 void key_callback(GLFWwindow* window, int key, int scancode, int action, int mode);
 void mouse_callback(GLFWwindow* window, double xPos, double yPos);
 void move(LightController *lightController);
+void switchFlashlight(SpotLight* spotLight);
 
 int main() {
 
@@ -129,13 +131,13 @@ int main() {
 
    // Spotlight
    SpotLight spotLight(
-              camera.getPosition(),
-              camera.getDirection(),
-              glm::vec3(0.2f, 0.2f, 0.2f),
-              glm::vec3(0.5f, 0.5f, 0.5f),
-              glm::vec3(1.0f, 1.0f, 1.0f),
-              12.5,
-              15.0);
+           camera.getPosition(),
+           camera.getDirection(),
+           glm::vec3(0.2f, 0.2f, 0.2f),
+           glm::vec3(0.5f, 0.5f, 0.5f),
+           glm::vec3(1.0f, 1.0f, 1.0f),
+           12.5,
+           15.0);
 
    // Control the point light
    LightController lightController(&light);
@@ -276,6 +278,7 @@ int main() {
 
        // Control and camera management
        move(&lightController);
+       switchFlashlight(&spotLight);
 
        glm::mat4 ProjectionMatrix = camera.getProjectionMatrix();
        glm::mat4 ViewMatrix = camera.getViewMatrix();
@@ -336,16 +339,25 @@ int main() {
 
 // Callback methods
 
+void switchFlashlight(SpotLight* spotLight) {
+   if (keys[GLFW_KEY_F] && !keyStateF) {
+       keyStateF = !keyStateF;
+       spotLight->isEnabled() ? spotLight->setEnabled(false) : spotLight->setEnabled(true);
+   } else if (!keys[GLFW_KEY_F] && keyStateF) {
+       keyStateF = !keyStateF;
+   }
+}
+
 void move(LightController *lightController){
    // Camera controls
-   if(keys[GLFW_KEY_W] || keys[GLFW_KEY_S] || keys[GLFW_KEY_A] || keys[GLFW_KEY_D] || keys[GLFW_KEY_SPACE])
+   if (keys[GLFW_KEY_W] || keys[GLFW_KEY_S] || keys[GLFW_KEY_A] || keys[GLFW_KEY_D] || keys[GLFW_KEY_SPACE])
        camera.handleControls(window, windowWidth, windowHeight, deltaTime);
-   if(keys[GLFW_KEY_I] || keys[GLFW_KEY_K] || keys[GLFW_KEY_J] || keys[GLFW_KEY_L] || keys[GLFW_KEY_O] || keys[GLFW_KEY_U])
+   if (keys[GLFW_KEY_I] || keys[GLFW_KEY_K] || keys[GLFW_KEY_J] || keys[GLFW_KEY_L] || keys[GLFW_KEY_O] || keys[GLFW_KEY_U])
        lightController->control(window, deltaTime);
 }
 
 void key_callback(GLFWwindow* window, int key, int scancode, int action, int mode){
-    if(key == GLFW_KEY_ESCAPE && action == GLFW_PRESS)
+    if (key == GLFW_KEY_ESCAPE && action == GLFW_PRESS)
         glfwSetWindowShouldClose(window, GL_TRUE);
     if (key >= 0 && key < 1024){
         if(action == GLFW_PRESS) {

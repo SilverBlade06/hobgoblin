@@ -12,6 +12,7 @@ DirectionLight::DirectionLight() {
     this->ambient = glm::vec3(1.0, 1.0, 1.0);
     this->diffuse = glm::vec3(1.0, 1.0, 1.0);
     this->specular = glm::vec3(1.0, 1.0, 1.0);
+    this->enabled = true;
 }
 
 DirectionLight::DirectionLight(glm::vec3 lightDir, glm::vec3 ambient, glm::vec3 diffuse, glm::vec3 specular) {
@@ -19,6 +20,7 @@ DirectionLight::DirectionLight(glm::vec3 lightDir, glm::vec3 ambient, glm::vec3 
     this->ambient = ambient;
     this->diffuse = diffuse;
     this->specular = specular;
+    this->enabled = true;
 }
 
 void DirectionLight::setLightDir(glm::vec3 lightDir) {
