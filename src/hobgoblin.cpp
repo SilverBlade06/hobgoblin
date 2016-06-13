@@ -58,7 +58,7 @@ int main() {
 
    // Anti-aliasing
    glfwWindowHint(GLFW_SAMPLES, 4);
-
+//   float k = glm::cos(glm::radians(1));
 // Create window
    window = glfwCreateWindow(windowWidth, windowHeight, "Hobgoblin", NULL, NULL);
    if (!window) {
@@ -134,7 +134,8 @@ int main() {
               glm::vec3(0.2f, 0.2f, 0.2f),
               glm::vec3(0.5f, 0.5f, 0.5f),
               glm::vec3(1.0f, 1.0f, 1.0f),
-              12.5f);
+              12.5,
+              15.0);
 
    // Control the point light
    LightController lightController(&light);
@@ -246,12 +247,14 @@ int main() {
        GLint spotLightDiffuseID  = glGetUniformLocation(shader_program, "spotLight.diffuse");
        GLint spotLightSpecularID = glGetUniformLocation(shader_program, "spotLight.specular");
        GLint spotLightCutOffID = glGetUniformLocation(shader_program, "spotLight.cutOff");
+       GLint spotLightOuterCutOffID = glGetUniformLocation(shader_program, "spotLight.outerCutOff");
        glUniform3f(spotLightPosID, camera.getPosition().x, camera.getPosition().y, camera.getPosition().z);
        glUniform3f(spotLightDirID, camera.getDirection().x, camera.getDirection().y, camera.getDirection().z);
        glUniform3f(spotLightAmbientID, spotLight.getAmbient().r, spotLight.getAmbient().g, spotLight.getAmbient().b);
        glUniform3f(spotLightDiffuseID, spotLight.getDiffuse().r, spotLight.getDiffuse().g, spotLight.getDiffuse().b);
        glUniform3f(spotLightSpecularID, spotLight.getSpecular().r, spotLight.getSpecular().g, spotLight.getSpecular().b);
-       glUniform1f(spotLightCutOffID, spotLight.getCutoff());
+       glUniform1f(spotLightCutOffID, spotLight.getCutOff());
+       glUniform1f(spotLightOuterCutOffID, spotLight.getOuterCutoff());
 
        // Material properties
        GLint materialDiffuseID  = glGetUniformLocation(shader_program, "material.diffuse");

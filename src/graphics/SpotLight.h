@@ -14,14 +14,17 @@ class SpotLight: public Light {
 private:
     glm::vec3 lightPos;
     glm::vec3 lightDir;
-    GLfloat cutoff;
+    GLfloat cutOff;
+    GLfloat outerCutOff;
 public:
     SpotLight();
     SpotLight(glm::vec3 lightPos, glm::vec3 lightDir, glm::vec3 ambient,
-            glm::vec3 diffuse, glm::vec3 specular, GLfloat cutoff);
-    GLfloat getCutoff() const;
-    void setCutoff(GLfloat cutoff);
+            glm::vec3 diffuse, glm::vec3 specular, GLfloat cutOff, GLfloat outerCutOff);
+    GLfloat getCutOff() const;
+    void setCutoff(GLfloat cutOff);
     const glm::vec3& getLightDir() const;
+    GLfloat getOuterCutoff() const;
+    void setOuterCutoff(GLfloat outerCutOff);
     void setLightDir(const glm::vec3& lightDir);
     const glm::vec3& getLightPos() const;
     void setLightPos(const glm::vec3& lightPos);

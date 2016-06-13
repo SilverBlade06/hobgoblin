@@ -30,6 +30,7 @@ struct SpotLight {
     vec3 position;
     vec3 direction;
 	float cutOff;
+	float outerCutOff;
 
     vec3 ambient;
     vec3 diffuse;
@@ -90,36 +91,25 @@ void main () {
 // Spotlight calculations
 	vec3 spotLightDir = normalize(spotLight.position - FragPos);
 	float theta = dot(spotLightDir, normalize(-spotLight.direction));
+	float epsilon   = spotLight.cutOff - spotLight.outerCutOff;
+	float intensity = clamp((theta - spotLight.outerCutOff) / epsilon, 0.0, 1.0);   
 
-	vec3 sumAmbient;
-	vec3 sumDiffuse;
-	vec3 sumSpecular;
-	vec3 spotAmbient;
-	vec3 spotDiffuse;
-	vec3 spotSpecular;
+	// Ambient
+	vec3 spotAmbient = spotLight.ambient * vec3(texture(material.diffuse, TexCoord));
 
-	if (theta > spotLight.cutOff) {
-		// Ambient
-		spotAmbient = spotLight.ambient * vec3(texture(material.diffuse, TexCoord));
-
-		// Diffuse
-		float spotDiff = max(dot(norm, spotLightDir), 0.0);
-		spotDiffuse = spotLight.diffuse * spotDiff * vec3(texture(material.diffuse, TexCoord));
+	// Diffuse
+	float spotDiff = max(dot(norm, spotLightDir), 0.0);
+	vec3 spotDiffuse = spotLight.diffuse * spotDiff * vec3(texture(material.diffuse, TexCoord)) * intensity;
 	
-		// Specular
-		vec3 spotReflectDir = reflect(-spotLightDir, norm);
-		float spotSpec = pow(max(dot(viewDir, spotReflectDir), 0.0), material.shininess);
-		spotSpecular = spotLight.specular * spotSpec * vec3(texture(material.specular, TexCoord));
+	// Specular
+	vec3 spotReflectDir = reflect(-spotLightDir, norm);
+	float spotSpec = pow(max(dot(viewDir, spotReflectDir), 0.0), material.shininess);
+	vec3 spotSpecular = spotLight.specular * spotSpec * vec3(texture(material.specular, TexCoord)) * intensity;
 
-		// Summarize
-		sumAmbient = dirAmbient + ambient + spotAmbient;
-		sumDiffuse = dirDiffuse + diffuse + spotDiffuse;
-		sumSpecular = dirSpecular + specular + spotSpecular;
-	} else {
-// Summarize
-	sumAmbient = dirAmbient + ambient;
-	sumDiffuse = dirDiffuse + diffuse;
-	sumSpecular = dirSpecular + specular;
-	}
-	color = vec4(sumAmbient + sumDiffuse + sumSpecular, 1);
+	// Summarize
+	vec3 sumAmbient = dirAmbient + ambient + spotAmbient;
+	vec3 sumDiffuse = dirDiffuse + diffuse + spotDiffuse;
+	vec3 sumSpecular = dirSpecular + specular + spotSpecular;
+
+	color = vec4(sumAmbient + sumDiffuse + sumSpecular, 1.0);
 }
