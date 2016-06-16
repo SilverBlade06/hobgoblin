@@ -161,8 +161,8 @@ int main() {
 //   calculateNormals(points, 2);
    calculateNormals(points, 4, indices, 2);
    calculateNormals(points2, 4);
-   calculateNormals(cube, 12);
-//   calculateNormals(cube, 8, indicesCube, 12);
+//   calculateNormals(cube, 12);
+   calculateNormals(cube, 8, indicesCube, 12);
 
    // Vertex buffer objects
    GLuint vbo = 0;
@@ -185,8 +185,8 @@ int main() {
    vao3 = generateVAO(vao3, vbo3, 3);
    GLuint ebo3 = 0;
    glGenBuffers(1, &ebo3);
-   glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ebo);
-   glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);
+   glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ebo3);
+   glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indicesCube), indicesCube, GL_STATIC_DRAW);
 
    // Create background color by clearing
    glClearColor(0.2, 0.2, 0.2, 1);
@@ -326,8 +326,8 @@ int main() {
        glBindTexture(GL_TEXTURE_2D, texture4);
        // Use 2nd shader program with the 3nd VAO
        glBindVertexArray(vao3);
-       glDrawArrays(GL_TRIANGLES, 0, 12*3); // draw 12 triangles
-//       glDrawElements(GL_TRIANGLES, 36, GL_UNSIGNED_INT, indicesCube);
+//       glDrawArrays(GL_TRIANGLES, 0, 12*3); // draw 12 triangles
+       glDrawElements(GL_TRIANGLES, 36, GL_UNSIGNED_INT, indicesCube);
 
        // cleanup
        glBindTexture(GL_TEXTURE_2D, 0);
