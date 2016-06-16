@@ -27,6 +27,13 @@ GLuint generateVAO(GLuint vao, GLuint vbo, GLuint verticesPerDraw) {
     return vao;
 }
 
+GLuint generateEBO(GLuint ebo, GLuint* indices) {
+    glGenBuffers(1, &ebo);
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ebo);
+    glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);
+    return ebo;
+}
+
 // Calculate normals
 void calculateNormals(GLfloat *vertices, int size) {
     for (int i = 0; i < size; i++) {

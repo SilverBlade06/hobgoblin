@@ -13,6 +13,7 @@
 
 GLuint generateVBO(GLuint vbo, GLsizeiptr size, const GLvoid * data);
 GLuint generateVAO(GLuint vao, GLuint vbo, GLuint verticesPerDraw);
+GLuint generateEBO(GLuint ebo, GLuint* indices);
 void calculateNormals(GLfloat *vertices, int size);
 void calculateNormals(GLfloat *vertices, int vertexSize, GLuint *indices, int indexSize);
 // Vertices /**/ Texture coords /**/ Normals

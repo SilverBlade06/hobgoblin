@@ -174,17 +174,13 @@ int main() {
    GLuint vao = 0;
    vao = generateVAO(vao, vbo, 3);
    GLuint ebo = 0;
-   glGenBuffers(1, &ebo);
-   glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ebo);
-   glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);
+   generateEBO(ebo, indices);
    GLuint vao2 = 0;
    vao2 = generateVAO(vao2, vbo2, 3);
    GLuint vao3 = 0;
    vao3 = generateVAO(vao3, vbo3, 3);
    GLuint ebo3 = 0;
-   glGenBuffers(1, &ebo3);
-   glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ebo3);
-   glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indicesCube), indicesCube, GL_STATIC_DRAW);
+   generateEBO(ebo3, indicesCube);
 
    // Create background color by clearing
    glClearColor(0.2, 0.2, 0.2, 1);
