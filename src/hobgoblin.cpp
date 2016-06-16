@@ -158,9 +158,11 @@ int main() {
    Material material(texture3, texture4, shininess);
 
    // Calculate normal vectors
-   calculateNormals(points, 2);
+//   calculateNormals(points, 2);
+   calculateNormals(points, 4, indices, 2);
    calculateNormals(points2, 4);
    calculateNormals(cube, 12);
+//   calculateNormals(cube, 8, indicesCube, 12);
 
    // Vertex buffer objects
    GLuint vbo = 0;
@@ -173,10 +175,18 @@ int main() {
    // Vertex attribute objects
    GLuint vao = 0;
    vao = generateVAO(vao, vbo, 3);
+   GLuint ebo = 0;
+   glGenBuffers(1, &ebo);
+   glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ebo);
+   glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);
    GLuint vao2 = 0;
    vao2 = generateVAO(vao2, vbo2, 3);
    GLuint vao3 = 0;
    vao3 = generateVAO(vao3, vbo3, 3);
+   GLuint ebo3 = 0;
+   glGenBuffers(1, &ebo3);
+   glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ebo);
+   glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);
 
    // Create background color by clearing
    glClearColor(0.2, 0.2, 0.2, 1);
@@ -297,7 +307,8 @@ int main() {
        glActiveTexture(GL_TEXTURE1);
        glBindTexture(GL_TEXTURE_2D, texture);
        glBindVertexArray(vao);
-       glDrawArrays(GL_TRIANGLES, 0, 2*3); // draw 2 triangles
+//       glDrawArrays(GL_TRIANGLES, 0, 2*3); // draw 2 triangles
+       glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, indices);
 
        // Bind the texture
        glActiveTexture(GL_TEXTURE0);
@@ -316,6 +327,7 @@ int main() {
        // Use 2nd shader program with the 3nd VAO
        glBindVertexArray(vao3);
        glDrawArrays(GL_TRIANGLES, 0, 12*3); // draw 12 triangles
+//       glDrawElements(GL_TRIANGLES, 36, GL_UNSIGNED_INT, indicesCube);
 
        // cleanup
        glBindTexture(GL_TEXTURE_2D, 0);

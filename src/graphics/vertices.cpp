@@ -50,3 +50,35 @@ void calculateNormals(GLfloat *vertices, int size) {
         vertices[i*24+23] = normal.z;
     }
 }
+
+void calculateNormals(GLfloat *vertices, int vertexSize, GLuint *indices, int indexSize) {
+   glm::vec3 normalBeforeNormalized;
+   for (int i = 0; i < indexSize; i++) {
+       glm::vec3 vector1 = -glm::vec3(
+               vertices[indices[i*3]*8]   - vertices[indices[i*3+1]*8],
+               vertices[indices[i*3]*8+1] - vertices[indices[i*3+1]*8+1],
+               vertices[indices[i*3]*8+2] - vertices[indices[i*3+1]*8+2]);
+       glm::vec3 vector2 = -glm::vec3(
+               vertices[indices[i*3+2]*8]   - vertices[indices[i*3+1]*8],
+               vertices[indices[i*3+2]*8+1] - vertices[indices[i*3+1]*8+1],
+               vertices[indices[i*3+2]*8+2] - vertices[indices[i*3+1]*8+2]);
+
+       normalBeforeNormalized = glm::cross(vector2, vector1);
+       vertices[indices[i*3]*8+5] += normalBeforeNormalized.x;
+       vertices[indices[i*3]*8+6] += normalBeforeNormalized.y;
+       vertices[indices[i*3]*8+7] += normalBeforeNormalized.z;
+       vertices[indices[i*3+1]*8+5] += normalBeforeNormalized.x;
+       vertices[indices[i*3+1]*8+6] += normalBeforeNormalized.y;
+       vertices[indices[i*3+1]*8+7] += normalBeforeNormalized.z;
+       vertices[indices[i*3+2]*8+5] += normalBeforeNormalized.x;
+       vertices[indices[i*3+2]*8+6] += normalBeforeNormalized.y;
+       vertices[indices[i*3+2]*8+7] += normalBeforeNormalized.z;
+   }
+
+   for (int i = 0; i < vertexSize; i++) {
+       glm::vec3 normal = glm::normalize(glm::vec3(vertices[i*8+5], vertices[i*8+6], vertices[i*8+7]));
+       vertices[i*8+5] = normal.x;
+       vertices[i*8+6] = normal.y;
+       vertices[i*8+7] = normal.z;
+   }
+}
