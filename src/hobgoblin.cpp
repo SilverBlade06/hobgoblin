@@ -158,19 +158,17 @@ int main() {
    Material material(texture3, texture4, shininess);
 
    // Calculate normal vectors
-//   calculateNormals(points, 2);
    calculateNormals(points, 4, indices, 2);
    calculateNormals(points2, 4);
-//   calculateNormals(cube, 12);
    calculateNormals(cube, 8, indicesCube, 12);
 
    // Vertex buffer objects
    GLuint vbo = 0;
-   vbo = generateVBO(vbo, 48 * sizeof(GLfloat), points);
+   vbo = generateVBO(vbo, 32 * sizeof(GLfloat), points);
    GLuint vbo2 = 0;
    vbo2 = generateVBO(vbo2, 96 * sizeof(GLfloat), points2);
    GLuint vbo3 = 0;
-   vbo3 = generateVBO(vbo3, 288 * sizeof(GLfloat), cube);
+   vbo3 = generateVBO(vbo3, 64 * sizeof(GLfloat), cube);
 
    // Vertex attribute objects
    GLuint vao = 0;
@@ -307,7 +305,6 @@ int main() {
        glActiveTexture(GL_TEXTURE1);
        glBindTexture(GL_TEXTURE_2D, texture);
        glBindVertexArray(vao);
-//       glDrawArrays(GL_TRIANGLES, 0, 2*3); // draw 2 triangles
        glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, indices);
 
        // Bind the texture

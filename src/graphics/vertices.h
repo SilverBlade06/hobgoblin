@@ -21,7 +21,6 @@ void calculateNormals(GLfloat *vertices, int vertexSize, GLuint *indices, int in
             0.5f, -0.5f, -1.0f,/**/  0.0f,  1.0f, /**/ 0.0, 0.0, 0.0,
             0.5f,  0.5f, -1.0f,/**/  1.0f,  1.0f, /**/ 0.0, 0.0, 0.0,
            -0.5f,  0.5f, -1.0f,/**/  1.0f,  0.0f, /**/ 0.0, 0.0, 0.0,
-
            -0.5f, -0.5f, -1.0f,/**/  0.0f,  0.0f, /**/ 0.0, 0.0, 0.0
    };
 
