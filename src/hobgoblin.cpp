@@ -173,12 +173,14 @@ int main() {
    // Vertex attribute objects
    GLuint vao = 0;
    vao = generateVAO(vao, vbo, 3);
-   GLuint ebo = 0;
-   ebo = generateEBO(ebo, indices);
    GLuint vao2 = 0;
    vao2 = generateVAO(vao2, vbo2, 3);
    GLuint vao3 = 0;
    vao3 = generateVAO(vao3, vbo3, 3);
+
+   // Element Buffer objects
+   GLuint ebo = 0;
+   ebo = generateEBO(ebo, indices);
    GLuint ebo3 = 0;
    ebo3 = generateEBO(ebo3, indicesCube);
 
@@ -319,7 +321,6 @@ int main() {
        glBindTexture(GL_TEXTURE_2D, texture4);
        // Use 2nd shader program with the 3nd VAO
        glBindVertexArray(vao3);
-//       glDrawArrays(GL_TRIANGLES, 0, 12*3); // draw 12 triangles
        glDrawElements(GL_TRIANGLES, 36, GL_UNSIGNED_INT, indicesCube);
 
        // cleanup
