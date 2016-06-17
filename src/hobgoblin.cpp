@@ -168,19 +168,19 @@ int main() {
    GLuint vbo2 = 0;
    vbo2 = generateVBO(vbo2, 96 * sizeof(GLfloat), points2);
    GLuint vbo3 = 0;
-   vbo3 = generateVBO(vbo3, 64 * sizeof(GLfloat), cube);
+   vbo3 = generateVBO(vbo3, 192 * sizeof(GLfloat), cube);
 
    // Vertex attribute objects
    GLuint vao = 0;
    vao = generateVAO(vao, vbo, 3);
    GLuint ebo = 0;
-   generateEBO(ebo, indices);
+   ebo = generateEBO(ebo, indices);
    GLuint vao2 = 0;
    vao2 = generateVAO(vao2, vbo2, 3);
    GLuint vao3 = 0;
    vao3 = generateVAO(vao3, vbo3, 3);
    GLuint ebo3 = 0;
-   generateEBO(ebo3, indicesCube);
+   ebo3 = generateEBO(ebo3, indicesCube);
 
    // Create background color by clearing
    glClearColor(0.2, 0.2, 0.2, 1);
