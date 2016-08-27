@@ -61,11 +61,11 @@ void calculateNormals(GLfloat *vertices, int size) {
 void calculateNormals(GLfloat *vertices, int vertexSize, GLuint *indices, int indexSize) {
    glm::vec3 normalBeforeNormalized;
    for (int i = 0; i < indexSize; i++) {
-       glm::vec3 vector1 = -glm::vec3(
+       glm::vec3 vector1 = glm::vec3(
                vertices[indices[i*3]*8]   - vertices[indices[i*3+1]*8],
                vertices[indices[i*3]*8+1] - vertices[indices[i*3+1]*8+1],
                vertices[indices[i*3]*8+2] - vertices[indices[i*3+1]*8+2]);
-       glm::vec3 vector2 = -glm::vec3(
+       glm::vec3 vector2 = glm::vec3(
                vertices[indices[i*3+2]*8]   - vertices[indices[i*3+1]*8],
                vertices[indices[i*3+2]*8+1] - vertices[indices[i*3+1]*8+1],
                vertices[indices[i*3+2]*8+2] - vertices[indices[i*3+1]*8+2]);
